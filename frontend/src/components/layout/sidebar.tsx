@@ -30,6 +30,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AurenLogoMark } from "@/components/ui/auren-logo";
 
 interface SidebarProps {
   activeBusinessId: string;
@@ -58,11 +59,9 @@ export function Sidebar({ activeBusinessId, onSelectBusiness }: SidebarProps) {
       {/* 1. App Header & Workspace Switcher */}
       <div className="border-b border-border p-4">
         <Link href="/" className="flex items-center gap-2 mb-3 px-1">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sage-accent text-ivory-soft font-display font-bold text-sm shadow-subtle">
-            A
-          </div>
+          <AurenLogoMark size={28} color="#4E5841" />
           <div>
-            <span className="font-display text-base font-bold tracking-tight text-ink-primary">
+            <span className="font-display text-base font-bold tracking-[0.18em] text-ink-primary">
               AUREN
             </span>
             <span className="ml-1.5 text-[10px] font-medium text-sage-accent uppercase tracking-wider">
