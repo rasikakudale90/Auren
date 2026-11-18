@@ -38,84 +38,82 @@ export default function SignUpPage() {
     setTimeout(() => {
       setIsLoading(false);
       router.push("/onboarding");
-    }, 600);
+    }, 400);
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col lg:flex-row bg-[#FAF9F5]">
+    <div className="flex min-h-screen w-full flex-col lg:flex-row bg-[#FAF8F5]">
       {/* 1. LEFT PANEL */}
-      <div className="relative w-full lg:w-[54%] lg:min-h-screen bg-[#38412E] overflow-hidden">
-        <div className="relative h-[480px] sm:h-[600px] lg:h-full w-full">
-          <Image
-            src="/images/auren-login-left.png"
-            alt="AUREN — Command Your Business With Confidence"
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 54vw"
-            className="object-cover object-top sm:object-center"
-          />
-        </div>
+      <div className="relative w-full lg:w-[54%] h-[460px] sm:h-[600px] lg:h-screen lg:sticky lg:top-0 bg-[#38412E] overflow-hidden shrink-0">
+        <Image
+          src="/images/auren-login-left.png"
+          alt="AUREN — Command Your Business With Confidence"
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 54vw"
+          className="object-cover object-center"
+        />
       </div>
 
       {/* 2. RIGHT PANEL */}
-      <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 sm:px-12 lg:w-[46%] lg:px-16 bg-[#FAF9F5]">
+      <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 sm:px-12 lg:w-[46%] lg:px-16 bg-[#FAF8F5]">
         <div className="w-full max-w-[420px] mx-auto">
           <div className="flex flex-col items-center text-center">
-            <AurenLogoMark size={56} color="#4E5841" />
-            <span className="font-display font-bold text-lg tracking-[0.28em] text-[#242522] mt-3">
+            <AurenLogoMark size={64} color="#4C563F" />
+            <span className="font-display font-bold text-lg tracking-[0.28em] text-[#1F201D] mt-3">
               AUREN
             </span>
-            <h1 className="font-display text-2xl sm:text-[28px] font-bold text-[#242522] mt-5 tracking-tight">
+            <h1 className="font-display text-[26px] sm:text-[28px] font-bold text-[#1F201D] mt-4 tracking-tight leading-tight">
               Create Your Account
             </h1>
-            <p className="text-xs text-[#6E706A] mt-1.5">
+            <p className="text-[13px] text-[#73756E] mt-1 font-normal">
               Start managing inquiries, follow-ups, and orders in one place
             </p>
           </div>
 
           <form onSubmit={handleSignUp} className="mt-8 space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#242522] mb-1.5">
+              <label className="block text-[13px] font-semibold text-[#1F201D] mb-1.5">
                 Full Name
               </label>
               <div className="relative flex items-center">
-                <User className="absolute left-3.5 h-4 w-4 text-[#92938D]" />
+                <User className="absolute left-3.5 h-4 w-4 text-[#8E908A]" />
                 <input
                   type="text"
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Rasika Kudale"
-                  className="h-11 w-full rounded-xl border border-[#E7E5DE] bg-[#FFFDF9] pl-10 pr-4 text-xs text-[#242522] placeholder:text-[#92938D] shadow-[0_1px_2px_rgba(0,0,0,0.03)] focus:border-[#4E5841] focus:outline-none focus:ring-1 focus:ring-[#4E5841]"
+                  className="h-12 w-full rounded-xl border border-[#E5E3DC] bg-white pl-10 pr-4 text-sm text-[#1F201D] placeholder:text-[#9A9C94] shadow-[0_1px_2px_rgba(0,0,0,0.02)] focus:border-[#4C563F] focus:outline-none focus:ring-1 focus:ring-[#4C563F]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#242522] mb-1.5">
+              <label className="block text-[13px] font-semibold text-[#1F201D] mb-1.5">
                 Business Name
               </label>
               <div className="relative flex items-center">
-                <Store className="absolute left-3.5 h-4 w-4 text-[#92938D]" />
+                <Store className="absolute left-3.5 h-4 w-4 text-[#8E908A]" />
                 <input
                   type="text"
                   required
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="e.g. Aura Studio & Crafts"
-                  className="h-11 w-full rounded-xl border border-[#E7E5DE] bg-[#FFFDF9] pl-10 pr-4 text-xs text-[#242522] placeholder:text-[#92938D] shadow-[0_1px_2px_rgba(0,0,0,0.03)] focus:border-[#4E5841] focus:outline-none focus:ring-1 focus:ring-[#4E5841]"
+                  placeholder="e.g. Rasika Studio"
+                  className="h-12 w-full rounded-xl border border-[#E5E3DC] bg-white pl-10 pr-4 text-sm text-[#1F201D] placeholder:text-[#9A9C94] shadow-[0_1px_2px_rgba(0,0,0,0.02)] focus:border-[#4C563F] focus:outline-none focus:ring-1 focus:ring-[#4C563F]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#242522] mb-1.5">
-                Business Category
+              <label className="block text-[13px] font-semibold text-[#1F201D] mb-1.5">
+                Primary Product Category
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="h-11 w-full rounded-xl border border-[#E7E5DE] bg-[#FFFDF9] px-3.5 text-xs text-[#242522] shadow-[0_1px_2px_rgba(0,0,0,0.03)] focus:border-[#4E5841] focus:outline-none focus:ring-1 focus:ring-[#4E5841]"
+                className="h-12 w-full rounded-xl border border-[#E5E3DC] bg-white px-3.5 text-sm text-[#1F201D] shadow-[0_1px_2px_rgba(0,0,0,0.02)] focus:border-[#4C563F] focus:outline-none focus:ring-1 focus:ring-[#4C563F]"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -126,36 +124,35 @@ export default function SignUpPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#242522] mb-1.5">
-                Work Email
+              <label className="block text-[13px] font-semibold text-[#1F201D] mb-1.5">
+                Email Address
               </label>
               <div className="relative flex items-center">
-                <Mail className="absolute left-3.5 h-4 w-4 text-[#92938D]" />
+                <Mail className="absolute left-3.5 h-4 w-4 text-[#8E908A]" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@yourbusiness.com"
-                  className="h-11 w-full rounded-xl border border-[#E7E5DE] bg-[#FFFDF9] pl-10 pr-4 text-xs text-[#242522] placeholder:text-[#92938D] shadow-[0_1px_2px_rgba(0,0,0,0.03)] focus:border-[#4E5841] focus:outline-none focus:ring-1 focus:ring-[#4E5841]"
+                  placeholder="Enter your email address"
+                  className="h-12 w-full rounded-xl border border-[#E5E3DC] bg-white pl-10 pr-4 text-sm text-[#1F201D] placeholder:text-[#9A9C94] shadow-[0_1px_2px_rgba(0,0,0,0.02)] focus:border-[#4C563F] focus:outline-none focus:ring-1 focus:ring-[#4C563F]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#242522] mb-1.5">
+              <label className="block text-[13px] font-semibold text-[#1F201D] mb-1.5">
                 Password
               </label>
               <div className="relative flex items-center">
-                <Lock className="absolute left-3.5 h-4 w-4 text-[#92938D]" />
+                <Lock className="absolute left-3.5 h-4 w-4 text-[#8E908A]" />
                 <input
                   type="password"
                   required
-                  minLength={8}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Minimum 8 characters"
-                  className="h-11 w-full rounded-xl border border-[#E7E5DE] bg-[#FFFDF9] pl-10 pr-4 text-xs text-[#242522] placeholder:text-[#92938D] shadow-[0_1px_2px_rgba(0,0,0,0.03)] focus:border-[#4E5841] focus:outline-none focus:ring-1 focus:ring-[#4E5841]"
+                  placeholder="Create a strong password (min. 8 characters)"
+                  className="h-12 w-full rounded-xl border border-[#E5E3DC] bg-white pl-10 pr-4 text-sm text-[#1F201D] placeholder:text-[#9A9C94] shadow-[0_1px_2px_rgba(0,0,0,0.02)] focus:border-[#4C563F] focus:outline-none focus:ring-1 focus:ring-[#4C563F]"
                 />
               </div>
             </div>
@@ -163,18 +160,18 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#4E5841] text-sm font-semibold text-white shadow-subtle transition-all hover:bg-[#434D37] active:bg-[#38412E]"
+              className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#4C563F] text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#414B35] active:bg-[#38412E]"
             >
-              <span>{isLoading ? "Setting up..." : "Create Business Workspace"}</span>
+              <span>{isLoading ? "Setting up workspace..." : "Continue to Onboarding"}</span>
               <ArrowRight className="h-4 w-4" />
             </button>
           </form>
 
-          <p className="mt-8 text-center text-xs text-[#6E706A]">
+          <p className="mt-8 text-center text-[13px] text-[#73756E]">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="font-semibold text-[#242522] hover:underline hover:text-[#4E5841]"
+              className="font-semibold text-[#1F201D] hover:underline"
             >
               Log in
             </Link>
