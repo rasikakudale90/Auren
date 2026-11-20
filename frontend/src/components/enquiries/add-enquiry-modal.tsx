@@ -64,46 +64,103 @@ export function AddEnquiryModal({
   const [expectedValue, setExpectedValue] = React.useState<number | "">("");
   const [rawText, setRawText] = React.useState("");
   const [notes, setNotes] = React.useState("");
+  const [followUpDate, setFollowUpDate] = React.useState("");
+
+  // Drag and drop & File states
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = React.useState(false);
+  const [fileError, setFileError] = React.useState<string | null>(null);
+  const [uploadedPreviews, setUploadedPreviews] = React.useState<
+    { name: string; url: string; size: string }[]
+  >([]);
+  const [uploadedFiles, setUploadedFiles] = React.useState<string[]>([]);
 
   // AI Extraction state
   const [isExtracting, setIsExtracting] = React.useState(false);
+  const [extractStage, setExtractStage] = React.useState("");
   const [extractionDone, setExtractionDone] = React.useState(false);
-  const [uploadedFiles, setUploadedFiles] = React.useState<string[]>([]);
   const [saveSuccess, setSaveSuccess] = React.useState(false);
+
+  const handleFiles = (files: FileList | File[]) => {
+    setFileError(null);
+    const valid: { name: string; url: string; size: string }[] = [];
+
+    Array.from(files).forEach((file) => {
+      if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+        setFileError(`"${file.name}" is not supported. Use JPG, PNG, or WebP.`);
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setFileError(`"${file.name}" exceeds the 10MB limit.`);
+        return;
+      }
+      const url = URL.createObjectURL(file);
+      const size = (file.size / (1024 * 1024)).toFixed(2) + " MB";
+      valid.push({ name: file.name, url, size });
+    });
+
+    if (valid.length > 0) {
+      setUploadedPreviews((prev) => [...prev, ...valid].slice(0, 3));
+      setUploadedFiles((prev) => [...prev, ...valid.map((v) => v.name)].slice(0, 3));
+    }
+  };
+
+  const removeUploadedFile = (idx: number) => {
+    setUploadedPreviews((prev) => prev.filter((_, i) => i !== idx));
+    setUploadedFiles((prev) => prev.filter((_, i) => i !== idx));
+  };
 
   // Simulated Gemini AI Extraction
   const handleSimulateAiExtraction = () => {
     if (!rawText.trim() && uploadedFiles.length === 0) return;
     setIsExtracting(true);
+    setExtractStage("Detecting communication channel & OCR boundaries...");
+
+    setTimeout(() => {
+      setExtractStage("Gemini multimodal reasoning on products, quantity & intent...");
+    }, 350);
 
     setTimeout(() => {
       setIsExtracting(false);
       setExtractionDone(true);
+      setExtractStage("");
 
       // Intelligent parser simulation based on sample messages
-      if (rawText.toLowerCase().includes("vase") || uploadedFiles.length > 0) {
+      if (
+        rawText.toLowerCase().includes("vase") ||
+        uploadedFiles.some((f) => f.toLowerCase().includes("vase") || f.toLowerCase().includes("auren"))
+      ) {
         setCustomerName("Pooja Sharma");
         setCustomerHandle("@poojasharma_style");
+        setCustomerPhone("+91 98210 99482");
         setProductInterest("Handcrafted Ceramic Vase");
         setVariant("Earthy Sage");
         setQuantity(2);
         setExpectedValue(3100);
         setNotes("Needs delivery to Andheri East by Friday for a housewarming gift.");
-      } else if (rawText.toLowerCase().includes("journal") || rawText.toLowerCase().includes("leather")) {
+        setFollowUpDate("2026-11-21");
+      } else if (
+        rawText.toLowerCase().includes("journal") ||
+        rawText.toLowerCase().includes("leather")
+      ) {
         setCustomerName("Deepak Verma");
         setCustomerPhone("+91 98311 00293");
         setProductInterest("Embossed Leather Keepsake Journal");
         setQuantity(20);
         setExpectedValue(18000);
         setNotes("Custom logo embossing requested for corporate gift.");
+        setFollowUpDate("2026-11-20");
       } else {
-        setCustomerName("New Client");
+        setCustomerName("Ritika Deshmukh");
+        setCustomerHandle("@ritika_d");
         setProductInterest("Custom Soy Wax Botanical Candle");
+        setVariant("French Lavender");
         setQuantity(1);
         setExpectedValue(650);
         setNotes("Customer asked for price and shipping timeline.");
+        setFollowUpDate("2026-11-22");
       }
-    }, 1200);
+    }, 750);
   };
 
   const handleSaveEnquiry = () => {
@@ -126,6 +183,7 @@ export function AddEnquiryModal({
       expectedValue: expectedValue === "" ? undefined : Number(expectedValue),
       isAiExtracted: extractionDone,
       screenshots: uploadedFiles,
+      followUpDate: followUpDate ? new Date(followUpDate).toISOString() : undefined,
     });
 
     setTimeout(() => {
@@ -269,46 +327,114 @@ export function AddEnquiryModal({
 
               {/* Tab B: Upload Screenshot */}
               <TabsContent value="screenshot" className="space-y-3 pt-2">
-                <div className="rounded-xl border-2 border-dashed border-border bg-ivory-warm p-6 text-center">
-                  <UploadCloud className="mx-auto h-8 w-8 text-sage-accent" />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files) handleFiles(e.target.files);
+                  }}
+                />
+
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                    if (e.dataTransfer.files) handleFiles(e.dataTransfer.files);
+                  }}
+                  className={`rounded-xl border-2 border-dashed p-6 text-center transition-all ${
+                    isDragging
+                      ? "border-sage-accent bg-pastel-sage/30 scale-[1.01]"
+                      : "border-border bg-ivory-warm hover:bg-ivory-muted/40"
+                  }`}
+                >
+                  <UploadCloud
+                    className={`mx-auto h-8 w-8 transition-colors ${
+                      isDragging ? "text-sage-forest animate-bounce" : "text-sage-accent"
+                    }`}
+                  />
                   <p className="mt-2 text-xs font-semibold text-ink-primary">
-                    Upload chat screenshot (up to 3 images)
+                    Drag and drop screenshot here, or{" "}
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-sage-accent underline hover:text-sage-hover font-bold"
+                    >
+                      browse files
+                    </button>
                   </p>
                   <p className="mt-0.5 text-[10px] text-ink-muted">
-                    Supports JPG, PNG, WebP up to 10MB each. Private & encrypted.
+                    Supports JPG, PNG, WebP up to 10MB each (max 3 images).
                   </p>
 
-                  <div className="mt-4 flex justify-center gap-2">
+                  {/* Sample Fallback Button for fast evaluation */}
+                  <div className="mt-3 flex justify-center gap-2">
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() =>
-                        setUploadedFiles([
-                          "AurenLogin .png (Sample Chat Screenshot)",
+                        handleFiles([
+                          new File(["sample"], "ceramic_inquiry_chat.png", {
+                            type: "image/png",
+                          }),
                         ])
                       }
-                      className="text-xs"
+                      className="text-[11px] h-7 bg-ivory-soft text-ink-secondary hover:bg-ivory-muted"
                     >
-                      Attach Sample Screenshot
+                      Use Sample Chat Screenshot
                     </Button>
                   </div>
 
-                  {uploadedFiles.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2 justify-center">
-                      {uploadedFiles.map((f, i) => (
+                  {fileError && (
+                    <p className="mt-2 text-xs text-burgundy-deep font-semibold">
+                      {fileError}
+                    </p>
+                  )}
+
+                  {/* Thumbnail Previews */}
+                  {uploadedPreviews.length > 0 && (
+                    <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                      {uploadedPreviews.map((f, i) => (
                         <div
                           key={i}
-                          className="flex items-center gap-1.5 rounded-full border border-border bg-ivory-soft px-3 py-1 text-xs text-ink-primary"
+                          className="relative flex items-center gap-2 rounded-lg border border-border bg-ivory-soft p-2 text-left"
                         >
-                          <CheckCircle2 className="h-3 w-3 text-sage-forest" />
-                          <span>{f}</span>
+                          <div className="h-10 w-10 shrink-0 overflow-hidden rounded bg-beige-surface flex items-center justify-center">
+                            {f.url.startsWith("blob:") ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={f.url}
+                                alt={f.name}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <FileText className="h-5 w-5 text-sage-accent" />
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-[11px] font-semibold text-ink-primary">
+                              {f.name}
+                            </p>
+                            <p className="text-[10px] text-ink-muted">{f.size}</p>
+                          </div>
                           <button
                             type="button"
-                            onClick={() => setUploadedFiles([])}
-                            className="ml-1 text-ink-muted hover:text-ink-primary"
+                            onClick={() => removeUploadedFile(i)}
+                            className="rounded p-1 text-ink-muted hover:bg-beige-warm hover:text-burgundy-deep"
+                            aria-label="Remove image"
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       ))}
@@ -316,17 +442,32 @@ export function AddEnquiryModal({
                   )}
                 </div>
 
-                {uploadedFiles.length > 0 && (
-                  <div className="flex justify-end">
+                {isExtracting && (
+                  <div className="rounded-xl border border-beige-border bg-beige-warm/60 p-3.5 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-semibold text-ink-primary">
+                      <div className="flex items-center gap-2 text-sage-forest">
+                        <Sparkles className="h-3.5 w-3.5 animate-spin" />
+                        <span>Gemini Multimodal Analysis</span>
+                      </div>
+                      <span className="text-[11px] font-mono text-ink-muted">In Progress</span>
+                    </div>
+                    <p className="text-[11px] text-ink-secondary animate-pulse">{extractStage}</p>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
+                      <div className="h-full bg-sage-accent animate-pulse w-3/4 rounded-full" />
+                    </div>
+                  </div>
+                )}
+
+                {uploadedFiles.length > 0 && !isExtracting && (
+                  <div className="flex justify-end pt-1">
                     <Button
                       type="button"
                       onClick={handleSimulateAiExtraction}
-                      disabled={isExtracting}
                       size="sm"
-                      className="gap-1.5 bg-sage-accent text-xs hover:bg-sage-hover"
+                      className="gap-1.5 bg-sage-accent text-xs font-medium text-ivory-soft shadow-subtle hover:bg-sage-hover"
                     >
                       <Sparkles className="h-3.5 w-3.5" />
-                      <span>{isExtracting ? "Scanning Screenshot..." : "Extract Details via AI"}</span>
+                      <span>Extract Details with Gemini</span>
                     </Button>
                   </div>
                 )}
@@ -432,6 +573,18 @@ export function AddEnquiryModal({
                   onChange={(e) =>
                     setExpectedValue(e.target.value ? parseFloat(e.target.value) : "")
                   }
+                  className="mt-1"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="text-xs font-medium text-ink-secondary">
+                  Scheduled Follow-up Date (Optional)
+                </label>
+                <Input
+                  type="date"
+                  value={followUpDate}
+                  onChange={(e) => setFollowUpDate(e.target.value)}
                   className="mt-1"
                 />
               </div>

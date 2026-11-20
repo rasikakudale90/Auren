@@ -32,12 +32,12 @@
 | `/forgot-password` | Password Recovery Flow | ✅ Implemented | Email submission form with simulated reset instruction banner. |
 | `/verify-email` | Email Verification State | ✅ Implemented | Verification reminder with resend countdown timer. |
 | `/onboarding` | 3-Step Business Setup Wizard | ✅ Implemented | Step 1 (Identity), Step 2 (Regional Settings - INR/Asia:Kolkata), Step 3 (Launch Workspace). |
-| `/dashboard` | Main Operational Workspace | 🔄 Needs State Wiring | Storeflow KPI cards (Inquiries, Active Orders, Due Follow-ups, Revenue), recent inquiries feed, urgent follow-up alert. *(Needs connection to shared `WorkspaceContext`)*. |
-| `/enquiries` | Inquiries Directory & Capture | 🔄 Needs State Wiring | Inquiries table, channel filters (Instagram, WhatsApp, Telegram), status pills, modal with simulated AI extraction, and "Convert to Order" flow. *(Needs HTML5 drag-and-drop file upload)*. |
-| `/customers` | Customer Management | 🔄 Needs State Wiring | Customer cards, contact metadata, spend tracking, order history drawer, duplicate contact warning banner. *(Needs interactive merge modal)*. |
+| `/dashboard` | Main Operational Workspace | ✅ Implemented | Storeflow KPI cards (Inquiries, Active Orders, Due Follow-ups, Revenue), recent inquiries feed, urgent follow-up alert with Burgundy styling, fully wired to `WorkspaceContext`. |
+| `/enquiries` | Inquiries Directory & Capture | ✅ Implemented | Inquiries table, channel filters, status pills, HTML5 drag-and-drop screenshot upload with client preview, simulated Gemini multimodal extraction, editable draft review, and "Convert to Order" flow. |
+| `/customers` | Customer Management | 🔄 Needs Merge Modal | Customer cards, contact metadata, spend tracking, order history drawer, duplicate contact warning banner. *(Interactive merge modal in progress)*. |
 | `/orders` | Order Pipeline & Payments | ✅ Implemented | Order lifecycle stages, itemized breakdowns, manual "Record Payment" drawer (Cash/UPI/Bank Transfer balance calculator), and printable receipt preview. |
 | `/products` | Internal Product Catalogue | ✅ Implemented | Product card grid, variant tags, stock quantities, low-stock threshold warning pills, and "Add Product" drawer. |
-| `/follow-ups` | Follow-up Task Queue | 🔄 Needs State Wiring | Date-grouped tasks (Due Today, Upcoming, Completed). *(Needs reactive checkbox state syncing)*. |
+| `/follow-ups` | Follow-up Task Queue | ✅ Implemented | Date-grouped tasks (Due Today, Upcoming, Completed) with reactive checkbox state syncing and dynamic badge decrementing. |
 | `/quick-replies` | Reusable Message Templates | ✅ Implemented | Categorized templates (Greeting, Pricing, Payment, Delivery) with functional 1-click clipboard copy. |
 | `/notifications`| In-App Notification Center | ✅ Implemented | Operational alert cards (due follow-ups, low stock, new inquiries) with filter toggles. |
 | `/settings` | Business Settings & Preferences | ✅ Implemented | Business profile, regional preferences (INR / Asia/Kolkata), AI quota progress bar, and CSV export action. |
