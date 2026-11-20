@@ -39,8 +39,38 @@ export default function CustomersPage() {
   const [selectedTag, setSelectedTag] = React.useState<string>("All");
   const [activeCustomer, setActiveCustomer] = React.useState<Customer | null>(null);
 
-  // Duplicate warning state
+  // Duplicate warning & merge modal state
   const [showDuplicateBanner, setShowDuplicateBanner] = React.useState(true);
+  const [isMergeModalOpen, setIsMergeModalOpen] = React.useState(false);
+  const [mergeSuccessMsg, setMergeSuccessMsg] = React.useState<string | null>(null);
+  const [primaryRecordChoice, setPrimaryRecordChoice] = React.useState<"existing" | "incoming">("existing");
+
+  const duplicateCandidate = {
+    id: "cust-dup-temp",
+    name: "Pooja S.",
+    phone: "+91 98210 99482",
+    email: "pooja.sharma.orders@gmail.com",
+    socialHandle: "@pooja_s_backup",
+    channel: "WhatsApp",
+    tags: ["WhatsApp Lead", "Express Delivery"],
+    notes: "Direct WhatsApp chat regarding urgent housewarming ceramic sets.",
+    totalEnquiries: 1,
+    totalOrders: 1,
+    totalSpend: 1450,
+  };
+
+  const existingMatch = customers.find((c) => c.phone?.includes("98210 99482")) || customers[0];
+
+  const handleExecuteMerge = () => {
+    if (existingMatch) {
+      resolveCustomerDuplicate(existingMatch.id, duplicateCandidate.id);
+      setMergeSuccessMsg(
+        `Successfully merged contact records for ${existingMatch.name}. Consolidated phone (+91 98210 99482) and order history into unified profile.`
+      );
+      setShowDuplicateBanner(false);
+      setIsMergeModalOpen(false);
+    }
+  };
 
   // All unique tags
   const allTags = ["All", ...Array.from(new Set(customers.flatMap((c) => c.tags)))];
@@ -74,18 +104,22 @@ export default function CustomersPage() {
 
         {/* Potential Duplicate Banner (SRS Requirement FR-CUST-003) */}
         {showDuplicateBanner && (
-          <div className="flex items-center justify-between rounded-xl border border-[#E8DFC2] bg-pastel-butter/60 p-3.5 text-xs text-[#5C4A1A]">
+          <div className="flex items-center justify-between rounded-xl border border-beige-border bg-beige-warm/80 p-3.5 text-xs text-ink-primary shadow-subtle">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-[#8F6B12]" />
+              <AlertTriangle className="h-4 w-4 shrink-0 text-burgundy-deep" />
               <span>
-                <strong>Duplicate match suggested:</strong> A new enquiry from WhatsApp shares phone number <code>+91 98210 99482</code> with existing customer <strong>Pooja Sharma</strong>.
+                <strong>Duplicate contact suggested:</strong> A new enquiry from WhatsApp shares phone number{" "}
+                <code className="rounded bg-ivory-soft px-1.5 py-0.5 font-mono text-ink-primary border border-border">
+                  +91 98210 99482
+                </code>{" "}
+                with existing customer <strong>Pooja Sharma</strong>.
               </span>
             </div>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => setShowDuplicateBanner(false)}
-                className="font-semibold text-sage-forest underline hover:text-ink-primary"
+                onClick={() => setIsMergeModalOpen(true)}
+                className="font-semibold text-burgundy-deep underline hover:text-burgundy-accent"
               >
                 Review & Link
               </button>
@@ -97,6 +131,24 @@ export default function CustomersPage() {
                 Dismiss
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Merge Success Alert */}
+        {mergeSuccessMsg && (
+          <div className="flex items-center justify-between rounded-xl border border-pastel-sage bg-pastel-sage/50 p-3.5 text-xs text-sage-forest">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-sage-forest" />
+              <span>{mergeSuccessMsg}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setMergeSuccessMsg(null)}
+              className="text-sage-forest hover:text-ink-primary"
+            >
+              <span className="sr-only">Close</span>
+              &times;
+            </button>
           </div>
         )}
 
@@ -328,6 +380,180 @@ export default function CustomersPage() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* 4. Side-by-Side Customer Duplicate & Merge Modal (SRS FR-CUST-003) */}
+      <Dialog open={isMergeModalOpen} onOpenChange={setIsMergeModalOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+          <DialogHeader>
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-burgundy-border bg-burgundy-subtle text-burgundy-deep">
+                <Users className="h-4 w-4" />
+              </div>
+              <div>
+                <DialogTitle>Resolve Duplicate Customer Match</DialogTitle>
+                <DialogDescription>
+                  Two records share the verified phone number{" "}
+                  <code className="font-mono text-ink-primary">+91 98210 99482</code>. Compare details and consolidate into one verified profile.
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="space-y-4 pt-2">
+            {/* Side-by-Side Comparison Grid */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* Profile A: Existing Primary Customer */}
+              <div className="rounded-xl border-2 border-sage-accent/60 bg-ivory-soft p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-border/80 pb-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-sage-accent">
+                    Existing Verified Profile (Primary)
+                  </span>
+                  <Badge variant="replied" className="text-[10px]">
+                    In Directory
+                  </Badge>
+                </div>
+
+                <div>
+                  <h3 className="font-display text-base font-bold text-ink-primary">
+                    {existingMatch?.name || "Pooja Sharma"}
+                  </h3>
+                  <p className="text-xs text-ink-secondary">{existingMatch?.socialHandle}</p>
+                </div>
+
+                <div className="space-y-1.5 text-xs text-ink-secondary">
+                  <p className="flex items-center gap-1.5">
+                    <Phone className="h-3.5 w-3.5 text-ink-muted" />
+                    <span className="font-mono font-medium text-ink-primary">
+                      {existingMatch?.phone}
+                    </span>
+                  </p>
+                  <p className="flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5 text-ink-muted" />
+                    <span>{existingMatch?.email || "No email on record"}</span>
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {existingMatch?.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded border border-beige-border bg-beige-warm px-2 py-0.5 text-[10px] text-ink-primary"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="rounded-lg border border-border bg-ivory-warm p-2.5 text-xs text-ink-secondary">
+                  <div className="flex justify-between">
+                    <span>Recorded Orders:</span>
+                    <strong className="text-ink-primary">{existingMatch?.totalOrders}</strong>
+                  </div>
+                  <div className="flex justify-between mt-1">
+                    <span>Lifetime Spend:</span>
+                    <strong className="text-sage-forest">
+                      {formatCurrency(existingMatch?.totalSpend || 0)}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Profile B: Incoming Duplicate Lead */}
+              <div className="rounded-xl border border-burgundy-border/60 bg-burgundy-subtle/30 p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-burgundy-border/40 pb-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-burgundy-deep">
+                    Incoming Match Candidate
+                  </span>
+                  <Badge variant="urgent" className="text-[10px]">
+                    Requires Action
+                  </Badge>
+                </div>
+
+                <div>
+                  <h3 className="font-display text-base font-bold text-ink-primary">
+                    {duplicateCandidate.name}
+                  </h3>
+                  <p className="text-xs text-ink-secondary">{duplicateCandidate.socialHandle}</p>
+                </div>
+
+                <div className="space-y-1.5 text-xs text-ink-secondary">
+                  <p className="flex items-center gap-1.5">
+                    <Phone className="h-3.5 w-3.5 text-burgundy-deep" />
+                    <span className="font-mono font-medium text-ink-primary">
+                      {duplicateCandidate.phone}
+                    </span>
+                  </p>
+                  <p className="flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5 text-ink-muted" />
+                    <span>{duplicateCandidate.email}</span>
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {duplicateCandidate.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded border border-burgundy-border bg-burgundy-subtle px-2 py-0.5 text-[10px] text-burgundy-deep font-semibold"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="rounded-lg border border-border bg-ivory-soft p-2.5 text-xs text-ink-secondary">
+                  <div className="flex justify-between">
+                    <span>Incoming Orders:</span>
+                    <strong className="text-ink-primary">{duplicateCandidate.totalOrders}</strong>
+                  </div>
+                  <div className="flex justify-between mt-1">
+                    <span>New Order Value:</span>
+                    <strong className="text-sage-forest">
+                      {formatCurrency(duplicateCandidate.totalSpend)}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Merge Strategy Details */}
+            <div className="rounded-xl border border-border bg-ivory-warm p-4 space-y-2 text-xs text-ink-secondary">
+              <h4 className="font-bold text-ink-primary">Consolidation Summary:</h4>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>
+                  Keep primary name as <strong>{existingMatch?.name}</strong> and add backup handle{" "}
+                  <code>{duplicateCandidate.socialHandle}</code>.
+                </li>
+                <li>
+                  Combine tags: <em>{existingMatch?.tags.join(", ")}</em> and{" "}
+                  <em>{duplicateCandidate.tags.join(", ")}</em>.
+                </li>
+                <li>
+                  Link incoming WhatsApp inquiry and order history to the verified profile without losing historical records.
+                </li>
+              </ul>
+            </div>
+
+            {/* Dialog Footer Actions */}
+            <div className="flex flex-col-reverse justify-end gap-2 border-t border-border pt-4 sm:flex-row">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsMergeModalOpen(false)}
+              >
+                Keep as Separate Customers
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleExecuteMerge}
+                className="gap-1.5 bg-sage-accent hover:bg-sage-hover text-ivory-soft shadow-subtle"
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                <span>Confirm & Merge Records</span>
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 }
