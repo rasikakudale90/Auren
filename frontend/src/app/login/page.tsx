@@ -35,32 +35,34 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen w-full flex-col lg:flex-row bg-[#FAF8F5]">
       {/* ========================================================================= */}
-      {/* 1. LEFT PANEL (~54%): Exact reference matching AurenLogin .png            */}
-      {/* Uses docs/images/AurenLogin1.png which has the photo & built-in typography*/}
+      {/* 1. LEFT PANEL (50% Equal Split): Framed image without any cropping       */}
+      {/* Preserves 100% of top Auren logo and bottom headline/tagline               */}
       {/* ========================================================================= */}
-      <div className="relative w-full lg:w-[54%] h-[460px] sm:h-[600px] lg:h-screen lg:sticky lg:top-0 bg-[#38412E] overflow-hidden shrink-0">
-        <Image
-          src="/images/auren-login-left.png"
-          alt="AUREN — Command Your Business With Confidence. Every conversation. Every customer. Every order. One workspace."
-          fill
-          priority
-          sizes="(max-width: 1024px) 100vw, 54vw"
-          className="object-cover object-center"
-        />
+      <div className="flex w-full lg:w-1/2 items-center justify-center p-4 sm:p-8 lg:p-10 bg-[#FAF8F5] shrink-0">
+        <div className="relative w-full max-w-[520px] aspect-[891/941] rounded-2xl overflow-hidden shadow-card border border-[#E7E5DE] bg-white">
+          <Image
+            src="/images/auren-login-left.png"
+            alt="AUREN — Command Your Business With Confidence. Every conversation. Every customer. Every order. One workspace."
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-contain object-center"
+          />
+        </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. RIGHT PANEL (~46%): Exact recreation of AurenLogin .png                */}
+      {/* 2. RIGHT PANEL (50% Equal Split): Exact recreation of AurenLogin .png     */}
       {/* ========================================================================= */}
-      <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 sm:px-12 lg:w-[46%] lg:px-16 bg-[#FAF8F5]">
+      <div className="flex flex-1 flex-col justify-center items-center px-6 py-10 sm:px-12 lg:w-1/2 lg:px-16 bg-[#FAF8F5]">
         <div className="w-full max-w-[420px] mx-auto">
           {/* Centered Brand Mark & Wordmark */}
           <div className="flex flex-col items-center text-center">
-            <AurenLogoMark size={64} color="#4C563F" />
-            <span className="font-display font-bold text-lg tracking-[0.28em] text-[#1F201D] mt-3">
+            <AurenLogoMark size={58} color="#4C563F" />
+            <span className="font-display font-bold text-lg tracking-[0.28em] text-[#1F201D] mt-2.5">
               AUREN
             </span>
-            <h1 className="font-display text-[26px] sm:text-[28px] font-bold text-[#1F201D] mt-4 tracking-tight leading-tight">
+            <h1 className="font-display text-[26px] sm:text-[28px] font-bold text-[#1F201D] mt-3.5 tracking-tight leading-tight">
               Log in or Sign up
             </h1>
             <p className="text-[13px] text-[#73756E] mt-1 font-normal">
@@ -69,7 +71,7 @@ export default function LoginPage() {
           </div>
 
           {/* Social Sign-in Row */}
-          <div className="mt-7 grid grid-cols-2 gap-3.5">
+          <div className="mt-6 grid grid-cols-2 gap-3.5">
             {/* Apple */}
             <button
               type="button"
@@ -111,7 +113,7 @@ export default function LoginPage() {
           </div>
 
           {/* Centered 'or' Divider */}
-          <div className="relative my-6 flex items-center justify-center">
+          <div className="relative my-5 flex items-center justify-center">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-[#E5E3DC]" />
             </div>
@@ -121,7 +123,7 @@ export default function LoginPage() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-3.5">
             {/* Email Field */}
             <div>
               <label
@@ -179,7 +181,7 @@ export default function LoginPage() {
             </div>
 
             {/* Remember me & Forgot Password */}
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center justify-between pt-0.5">
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
@@ -204,7 +206,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#4C563F] text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#414B35] active:bg-[#38412E]"
+              className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#4C563F] text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#414B35] active:bg-[#38412E]"
             >
               <span>{isLoading ? "Signing in..." : "Log In"}</span>
               <ArrowRight className="h-4 w-4" />
@@ -212,7 +214,7 @@ export default function LoginPage() {
           </form>
 
           {/* Bottom Prompt */}
-          <p className="mt-8 text-center text-[13px] text-[#73756E]">
+          <p className="mt-6 text-center text-[13px] text-[#73756E]">
             Don&apos;t have an account?{" "}
             <Link
               href="/signup"

@@ -43,27 +43,29 @@ export default function SignUpPage() {
 
   return (
     <div className="flex min-h-screen w-full flex-col lg:flex-row bg-[#FAF8F5]">
-      {/* 1. LEFT PANEL */}
-      <div className="relative w-full lg:w-[54%] h-[460px] sm:h-[600px] lg:h-screen lg:sticky lg:top-0 bg-[#38412E] overflow-hidden shrink-0">
-        <Image
-          src="/images/auren-login-left.png"
-          alt="AUREN — Command Your Business With Confidence"
-          fill
-          priority
-          sizes="(max-width: 1024px) 100vw, 54vw"
-          className="object-cover object-center"
-        />
+      {/* 1. LEFT PANEL (50% Equal Split): Framed image without any cropping */}
+      <div className="flex w-full lg:w-1/2 items-center justify-center p-4 sm:p-8 lg:p-10 bg-[#FAF8F5] shrink-0">
+        <div className="relative w-full max-w-[520px] aspect-[891/941] rounded-2xl overflow-hidden shadow-card border border-[#E7E5DE] bg-white">
+          <Image
+            src="/images/auren-login-left.png"
+            alt="AUREN — Command Your Business With Confidence"
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-contain object-center"
+          />
+        </div>
       </div>
 
-      {/* 2. RIGHT PANEL */}
-      <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 sm:px-12 lg:w-[46%] lg:px-16 bg-[#FAF8F5]">
+      {/* 2. RIGHT PANEL (50% Equal Split) */}
+      <div className="flex flex-1 flex-col justify-center items-center px-6 py-10 sm:px-12 lg:w-1/2 lg:px-16 bg-[#FAF8F5]">
         <div className="w-full max-w-[420px] mx-auto">
           <div className="flex flex-col items-center text-center">
-            <AurenLogoMark size={64} color="#4C563F" />
-            <span className="font-display font-bold text-lg tracking-[0.28em] text-[#1F201D] mt-3">
+            <AurenLogoMark size={58} color="#4C563F" />
+            <span className="font-display font-bold text-lg tracking-[0.28em] text-[#1F201D] mt-2.5">
               AUREN
             </span>
-            <h1 className="font-display text-[26px] sm:text-[28px] font-bold text-[#1F201D] mt-4 tracking-tight leading-tight">
+            <h1 className="font-display text-[26px] sm:text-[28px] font-bold text-[#1F201D] mt-3.5 tracking-tight leading-tight">
               Create Your Account
             </h1>
             <p className="text-[13px] text-[#73756E] mt-1 font-normal">
@@ -71,7 +73,7 @@ export default function SignUpPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSignUp} className="mt-8 space-y-4">
+          <form onSubmit={handleSignUp} className="mt-6 space-y-3.5">
             <div>
               <label className="block text-[13px] font-semibold text-[#1F201D] mb-1.5">
                 Full Name
@@ -160,14 +162,14 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#4C563F] text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#414B35] active:bg-[#38412E]"
+              className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#4C563F] text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#414B35] active:bg-[#38412E]"
             >
               <span>{isLoading ? "Setting up workspace..." : "Continue to Onboarding"}</span>
               <ArrowRight className="h-4 w-4" />
             </button>
           </form>
 
-          <p className="mt-8 text-center text-[13px] text-[#73756E]">
+          <p className="mt-6 text-center text-[13px] text-[#73756E]">
             Already have an account?{" "}
             <Link
               href="/login"
