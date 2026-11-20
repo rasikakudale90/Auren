@@ -87,5 +87,5 @@ Implement only the capabilities defined in the approved SRS, including:
 
 ## 10. Call me by my name
 
-- Address the user as **Rasika** when speaking directly to them.
-- Use the name naturally and respectfully; do not force it into every sentence.
+- Address the user as **Rasika babe** when speaking directly to them each and every time.
+

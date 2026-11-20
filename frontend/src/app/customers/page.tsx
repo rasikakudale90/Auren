@@ -163,14 +163,21 @@ export default function CustomersPage() {
 
               {/* Tags */}
               <div className="mt-3 flex flex-wrap gap-1">
-                {cust.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded bg-ivory-warm border border-border/80 px-2 py-0.5 text-[10px] font-medium text-ink-secondary"
-                  >
-                    {t}
-                  </span>
-                ))}
+                {cust.tags.map((t) => {
+                  const isVip = t.toLowerCase().includes("vip") || t.toLowerCase().includes("high value");
+                  return (
+                    <span
+                      key={t}
+                      className={
+                        isVip
+                          ? "rounded border border-burgundy-border bg-burgundy-subtle px-2 py-0.5 text-[10px] font-semibold text-burgundy-deep"
+                          : "rounded border border-beige-border bg-beige-warm px-2 py-0.5 text-[10px] font-medium text-ink-primary"
+                      }
+                    >
+                      {t}
+                    </span>
+                  );
+                })}
               </div>
 
               {/* Notes */}

@@ -57,6 +57,23 @@ const config: Config = {
           mauve: "#EADDE5",
         },
 
+        // AUREN Editorial Warm Beige & Deep Burgundy Palette
+        beige: {
+          DEFAULT: "#EFECE6",
+          warm: "#F5F2EB",    // Warm linen surface
+          subtle: "#EFECE6",  // Oatmeal soft well / chip
+          surface: "#E8E3D9", // Tactile card / table well
+          border: "#DDD6C9",  // Organic warm border
+        },
+        burgundy: {
+          DEFAULT: "#6E2639", // Deep bordeaux / rich wine focal accent
+          deep: "#541B29",    // High-contrast text & urgent state
+          accent: "#6E2639",  // Interactive & badge accent
+          light: "#8C3549",   // Hover & active highlight
+          subtle: "#FBF2F4",  // Soft delicate wine wash
+          border: "#E8CAD1",  // Refined wine hairline border
+        },
+
         // Semantic / System mappings
         background: "#F7F6F2",
         foreground: "#242522",

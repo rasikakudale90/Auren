@@ -9,6 +9,7 @@ out/
 build/
 dist/
 target/
+*.tsbuildinfo
 
 # Logs
 *.log

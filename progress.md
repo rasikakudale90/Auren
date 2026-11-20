@@ -13,8 +13,9 @@
 | :--- | :--- | :---: | :---: |
 | **Phase F0** | Repository Initialization & Scaffolding | **COMPLETED** | 100% |
 | **Phase F1** | Design Tokens, Atoms & Responsive App Shell | **COMPLETED** | 100% |
+| **Phase F1.5** | Editorial Palette: Warm Linen Beige & Deep Burgundy Tokens | **COMPLETED** | 100% |
 | **Phase F2** | Public Marketing & Split Authentication Routes | **IN PROGRESS** | 90% |
-| **Phase F3** | Authenticated Workspace Modules & State Depth | **IN PROGRESS** | 75% |
+| **Phase F3** | Authenticated Workspace Modules & State Depth | **IN PROGRESS** | 80% |
 | **Phase B0** | Spring Boot Backend & Supabase Database Scaffolding | **PENDING** | 0% |
 | **Phase B1** | Gemini Multimodal Extraction Service Integration | **PENDING** | 0% |
 

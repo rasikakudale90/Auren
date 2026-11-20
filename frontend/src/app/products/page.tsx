@@ -119,7 +119,7 @@ export default function ProductsPage() {
                     className="object-cover"
                   />
                   {isLowStock && (
-                    <div className="absolute top-2 right-2 rounded-full border border-red-200 bg-red-50/90 px-2 py-0.5 text-[10px] font-bold text-red-700 backdrop-blur-sm">
+                    <div className="absolute top-2 right-2 rounded-full border border-burgundy-border bg-burgundy-subtle/95 px-2 py-0.5 text-[10px] font-bold text-burgundy-deep shadow-subtle backdrop-blur-sm">
                       Low Stock: {prod.stockQuantity} left
                     </div>
                   )}

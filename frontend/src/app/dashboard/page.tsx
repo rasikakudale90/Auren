@@ -130,7 +130,7 @@ export default function DashboardPage() {
             <CardTitle className="text-xs font-medium uppercase tracking-wider text-ink-muted">
               Pending Follow-ups
             </CardTitle>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-pastel-blush text-[#75342B]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-burgundy-border/60 bg-burgundy-subtle text-burgundy-deep">
               <Clock className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -138,7 +138,7 @@ export default function DashboardPage() {
             <div className="text-2xl font-bold text-ink-primary font-display">
               {dueFollowUps}
             </div>
-            <p className="mt-1 text-[11px] text-[#75342B] font-semibold flex items-center gap-1">
+            <p className="mt-1 text-[11px] text-burgundy-deep font-semibold flex items-center gap-1">
               <AlertCircle className="h-3 w-3" />
               <span>1 requires action today</span>
             </p>

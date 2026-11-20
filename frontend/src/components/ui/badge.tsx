@@ -38,13 +38,21 @@ const badgeVariants = cva(
         refunded:
           "border-border bg-ivory-muted text-ink-secondary",
           
-        // Urgency / Due dates
+        // Urgency / Due dates / Editorial accents
         dueToday:
-          "border-[#E8CECB] bg-pastel-blush text-[#75342B] font-semibold",
+          "border-burgundy-border bg-burgundy-subtle text-burgundy-deep font-semibold",
         overdue:
-          "border-red-200 bg-red-50 text-red-700 font-semibold",
+          "border-burgundy-border bg-burgundy-subtle text-burgundy-deep font-bold",
         upcoming:
           "border-border bg-ivory-soft text-ink-secondary",
+        urgent:
+          "border-burgundy-border bg-burgundy-subtle text-burgundy-deep font-semibold",
+        vip:
+          "border-burgundy-border bg-burgundy-subtle text-burgundy-deep font-semibold tracking-wide",
+        burgundy:
+          "border-burgundy-border bg-burgundy-subtle text-burgundy-deep font-medium",
+        beige:
+          "border-beige-border bg-beige-subtle text-ink-primary font-medium",
       },
     },
     defaultVariants: {
