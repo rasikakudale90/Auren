@@ -33,20 +33,29 @@
 | `/verify-email` | Email Verification State | ✅ Implemented | Verification reminder with resend countdown timer. |
 | `/onboarding` | 3-Step Business Setup Wizard | ✅ Implemented | Step 1 (Identity), Step 2 (Regional Settings - INR/Asia:Kolkata), Step 3 (Launch Workspace). |
 | `/dashboard` | Main Operational Workspace | ✅ Implemented | Storeflow KPI cards (Inquiries, Active Orders, Due Follow-ups, Revenue), recent inquiries feed, urgent follow-up alert with Burgundy styling, fully wired to `WorkspaceContext`. |
-| `/enquiries` | Inquiries Directory & Capture | ✅ Implemented | Inquiries table, channel filters, status pills, HTML5 drag-and-drop screenshot upload with client preview, simulated Gemini multimodal extraction, editable draft review, and "Convert to Order" flow. |
+| `/enquiries` | Inquiries Directory & Capture | ✅ Implemented | Inquiries table, channel filters, status pills, HTML5 drag-and-drop screenshot upload with client preview, simulated Gemini multimodal extraction, editable draft review, floating bulk action bar (mark status, export CSV), and "Convert to Order" flow. |
 | `/customers` | Customer Management | ✅ Implemented | Customer cards, contact metadata, spend tracking, order history drawer, duplicate contact warning banner, and side-by-side interactive comparison & merge modal with phone consolidation. |
-| `/orders` | Order Pipeline & Payments | ✅ Implemented | Order lifecycle stages, itemized breakdowns, manual "Record Payment" drawer (Cash/UPI/Bank Transfer balance calculator), and printable receipt preview. |
-| `/products` | Internal Product Catalogue | ✅ Implemented | Product card grid, variant tags, stock quantities, low-stock threshold warning pills, and "Add Product" drawer. |
-| `/follow-ups` | Follow-up Task Queue | ✅ Implemented | Date-grouped tasks (Due Today, Upcoming, Completed) with reactive checkbox state syncing and dynamic badge decrementing. |
+| `/orders` | Order Pipeline & Payments | ✅ Implemented | Order lifecycle stages, itemized breakdowns, manual "Record Payment" drawer (Cash/UPI/Bank Transfer balance calculator), printable receipt modal, and empty state. |
+| `/products` | Internal Product Catalogue | ✅ Implemented | Product card grid, variant tags, stock quantities, low-stock threshold warning pills, empty state, and "Add Product" drawer. |
+| `/follow-ups` | Follow-up Task Queue | ✅ Implemented | Date-grouped tasks (Due Today, Upcoming, Completed) with reactive checkbox state syncing, +2-day snooze action, dynamic badge decrementing, and empty state. |
 | `/quick-replies` | Reusable Message Templates | ✅ Implemented | Categorized templates (Greeting, Pricing, Payment, Delivery) with functional 1-click clipboard copy. |
 | `/notifications`| In-App Notification Center | ✅ Implemented | Operational alert cards (due follow-ups, low stock, new inquiries) with filter toggles. |
-| `/settings` | Business Settings & Preferences | ✅ Implemented | Business profile, regional preferences (INR / Asia/Kolkata), AI quota progress bar, and CSV export action. |
+| `/settings` | Business Settings & Preferences | ✅ Implemented | Business profile, regional preferences (INR / Asia/Kolkata), AI quota progress bar, complete CSV export, and 30-Day Trash Retention section with restore/purge (SRS FR-DATA-002 / SEC-004). |
 
 ---
 
 ## 3. Automated Test Suite Status
 
 Vitest, React Testing Library, and `@testing-library/jest-dom` are configured in `frontend/`:
+- `src/__tests__/login.test.tsx` (5 tests passing)
+- `src/__tests__/enquiries.test.ts` (3 tests passing)
+- `src/__tests__/orders.test.ts` (3 tests passing)
+- `src/__tests__/workspace-context.test.tsx` (6 tests passing)
+- `src/__tests__/screenshot-upload.test.ts` (4 tests passing)
+- `src/__tests__/customer-duplicate.test.ts` (2 tests passing)
+- `src/__tests__/trash-retention.test.ts` (3 tests passing)
+**Total: 7 suites, 26 tests passing with 0 errors.**
+**Production Build: 19/19 App Router static routes compiled.**
 
 - **Test Command:** `npm run test`
 - **Current Passing Suites:** 3 passed (11 tests total)

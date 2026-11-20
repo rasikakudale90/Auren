@@ -57,6 +57,10 @@ export default function EnquiriesPage() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [activeEnquiry, setActiveEnquiry] = React.useState<Enquiry | null>(null);
 
+  // Bulk actions state
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
+  const [bulkFeedback, setBulkFeedback] = React.useState<string | null>(null);
+
   // Convert to order modal state
   const [convertingEnquiry, setConvertingEnquiry] = React.useState<Enquiry | null>(null);
   const [orderQuantity, setOrderQuantity] = React.useState(1);
@@ -80,6 +84,28 @@ export default function EnquiriesPage() {
 
     return matchesStatus && matchesChannel && matchesSearch;
   });
+
+  const handleToggleSelectAll = () => {
+    if (selectedIds.length === filteredEnquiries.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredEnquiries.map((e) => e.id));
+    }
+  };
+
+  const handleToggleSelectOne = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkStatusUpdate = (status: EnquiryStatus) => {
+    selectedIds.forEach((id) => updateEnquiryStatus(id, status));
+    setBulkFeedback(`Updated ${selectedIds.length} enquiries to "${status}".`);
+    setSelectedIds([]);
+    setTimeout(() => setBulkFeedback(null), 3000);
+  };
 
   const handleUpdateStatus = (newStatus: EnquiryStatus) => {
     if (!activeEnquiry) return;
@@ -195,16 +221,48 @@ export default function EnquiriesPage() {
         </div>
       ) : (
         <div className="space-y-3">
+          {bulkFeedback && (
+            <div className="rounded-xl border border-pastel-sage bg-pastel-sage/50 p-3 text-xs text-sage-forest flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>{bulkFeedback}</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between text-xs text-ink-muted px-1">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={
+                  filteredEnquiries.length > 0 &&
+                  selectedIds.length === filteredEnquiries.length
+                }
+                onChange={handleToggleSelectAll}
+                className="rounded border-border accent-sage-accent cursor-pointer"
+              />
+              <span>Select All ({filteredEnquiries.length})</span>
+            </label>
+            <span>{filteredEnquiries.length} total inquiries</span>
+          </div>
+
           {filteredEnquiries.map((enq) => (
             <Card
               key={enq.id}
-              className="cursor-pointer transition-all hover:border-sage-accent/60 hover:shadow-subtle"
+              className={`cursor-pointer transition-all hover:border-sage-accent/60 hover:shadow-subtle ${
+                selectedIds.includes(enq.id) ? "border-sage-accent bg-pastel-sage/10" : ""
+              }`}
               onClick={() => setActiveEnquiry(enq)}
             >
               <CardContent className="p-4 sm:p-5">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   {/* Left: Customer Info */}
                   <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(enq.id)}
+                      onClick={(e) => handleToggleSelectOne(enq.id, e)}
+                      onChange={() => {}}
+                      className="mt-2.5 rounded border-border accent-sage-accent cursor-pointer"
+                    />
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-pastel-sage text-sage-forest font-bold text-xs">
                       {enq.customerName.charAt(0)}
                     </div>
@@ -298,6 +356,54 @@ export default function EnquiriesPage() {
               </CardContent>
             </Card>
           ))}
+        </div>
+      )}
+
+      {/* Floating Bulk Action Bar */}
+      {selectedIds.length > 0 && (
+        <div className="sticky bottom-6 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-beige-border bg-ivory-soft p-3.5 shadow-floating backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-sage-accent px-2.5 py-0.5 text-xs font-bold text-ivory-soft">
+              {selectedIds.length} selected
+            </span>
+            <button
+              onClick={() => setSelectedIds([])}
+              className="text-xs text-ink-muted underline hover:text-ink-primary"
+            >
+              Clear
+            </button>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => handleBulkStatusUpdate("Replied")}
+              className="text-xs h-8 bg-ivory-warm hover:bg-ivory-muted"
+            >
+              Mark Replied
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => handleBulkStatusUpdate("Interested")}
+              className="text-xs h-8 bg-ivory-warm hover:bg-ivory-muted"
+            >
+              Mark Interested
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setBulkFeedback(`Exported ${selectedIds.length} selected inquiries as CSV.`);
+                setSelectedIds([]);
+                setTimeout(() => setBulkFeedback(null), 3000);
+              }}
+              className="text-xs h-8 bg-ivory-warm hover:bg-ivory-muted"
+            >
+              Export Selected CSV
+            </Button>
+          </div>
         </div>
       )}
 

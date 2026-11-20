@@ -205,3 +205,13 @@ export interface NotificationItem {
   isRead: boolean;
   linkUrl?: string;
 }
+
+export interface TrashItem {
+  id: string;
+  title: string;
+  type: "Enquiry" | "Customer" | "Order";
+  deletedAt: string;
+  daysRemaining: number;
+  details: string;
+}
+

@@ -26,7 +26,7 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   return (
-    <div className="min-h-screen bg-[#FAF9F5] text-[#242522] selection:bg-[#E3E8DC] selection:text-[#242522]">
+    <div className="min-h-screen bg-[#FAF9F5] text-[#242522] selection:bg-[#E3E8DC] selection:text-[#242522] scroll-smooth">
       {/* ========================================================================= */}
       {/* 1. PUBLIC NAVIGATION HEADER                                               */}
       {/* ========================================================================= */}

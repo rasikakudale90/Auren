@@ -7,6 +7,7 @@ import {
   Product,
   QuickReply,
   NotificationItem,
+  TrashItem,
 } from "@/types";
 
 export const mockBusinesses: Business[] = [
@@ -699,3 +700,31 @@ export const mockNotifications: NotificationItem[] = [
     linkUrl: "/products",
   },
 ];
+
+export const mockTrashItems: TrashItem[] = [
+  {
+    id: "trash-1",
+    title: "Enquiry: Custom Linen Curtains",
+    type: "Enquiry",
+    deletedAt: "2 days ago",
+    daysRemaining: 28,
+    details: "Archived after customer cancelled custom dimension request.",
+  },
+  {
+    id: "trash-2",
+    title: "Duplicate: Rahul Verma (Old Number)",
+    type: "Customer",
+    deletedAt: "5 days ago",
+    daysRemaining: 25,
+    details: "Merged into primary profile +91 98201 55432.",
+  },
+  {
+    id: "trash-3",
+    title: "Order #ORD-7819 (Draft Abandoned)",
+    type: "Order",
+    deletedAt: "12 days ago",
+    daysRemaining: 18,
+    details: "Inquiry timed out before payment verification.",
+  },
+];
+
