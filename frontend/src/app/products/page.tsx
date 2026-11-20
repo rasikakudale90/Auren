@@ -101,27 +101,38 @@ export default function ProductsPage() {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((prod) => {
-          const isLowStock = prod.stockQuantity <= prod.lowStockThreshold;
+      {filtered.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-border bg-ivory-soft p-12 text-center">
+          <Package className="mx-auto h-8 w-8 text-sage-accent" />
+          <h3 className="mt-3 font-display text-sm font-semibold text-ink-primary">
+            No products in catalogue
+          </h3>
+          <p className="mt-1 text-xs text-ink-secondary">
+            Click &ldquo;Add Product&rdquo; above to catalog your first handcrafted creation.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((prod) => {
+            const isLowStock = prod.stockQuantity <= prod.lowStockThreshold;
 
-          return (
-            <Card key={prod.id} className="overflow-hidden transition-all hover:border-sage-accent/60">
-              {prod.imageUrl && (
-                <div className="relative h-44 w-full bg-ivory-warm">
-                  <Image
-                    src={prod.imageUrl}
-                    alt={prod.name}
-                    fill
-                    className="object-cover"
-                  />
-                  {isLowStock && (
-                    <div className="absolute top-2 right-2 rounded-full border border-burgundy-border bg-burgundy-subtle/95 px-2 py-0.5 text-[10px] font-bold text-burgundy-deep shadow-subtle backdrop-blur-sm">
-                      Low Stock: {prod.stockQuantity} left
-                    </div>
-                  )}
-                </div>
-              )}
+            return (
+              <Card key={prod.id} className="overflow-hidden transition-all hover:border-sage-accent/60">
+                {prod.imageUrl && (
+                  <div className="relative h-44 w-full bg-ivory-warm">
+                    <Image
+                      src={prod.imageUrl}
+                      alt={prod.name}
+                      fill
+                      className="object-cover"
+                    />
+                    {isLowStock && (
+                      <div className="absolute top-2 right-2 rounded-full border border-burgundy-border bg-burgundy-subtle/95 px-2 py-0.5 text-[10px] font-bold text-burgundy-deep shadow-subtle backdrop-blur-sm">
+                        Low Stock: {prod.stockQuantity} left
+                      </div>
+                    )}
+                  </div>
+                )}
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                   <div>
@@ -164,6 +175,7 @@ export default function ProductsPage() {
           );
         })}
       </div>
+    )}
 
       {/* Add Product Modal */}
       {isAddOpen && (

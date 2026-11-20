@@ -131,8 +131,19 @@ export default function OrdersPage() {
 
       {/* Orders List */}
       <div className="space-y-4">
-        {filteredOrders.map((ord) => (
-          <Card key={ord.id} className="transition-all hover:border-sage-accent/60">
+        {filteredOrders.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border bg-ivory-soft p-12 text-center">
+            <ShoppingBag className="mx-auto h-8 w-8 text-sage-accent" />
+            <h3 className="mt-3 font-display text-sm font-semibold text-ink-primary">
+              No orders found
+            </h3>
+            <p className="mt-1 text-xs text-ink-secondary">
+              Convert an inquiry into an order or adjust your status filters.
+            </p>
+          </div>
+        ) : (
+          filteredOrders.map((ord) => (
+            <Card key={ord.id} className="transition-all hover:border-sage-accent/60">
             <CardContent className="p-5">
               {/* Order Header */}
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-border/70 pb-3">
@@ -270,8 +281,9 @@ export default function OrdersPage() {
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        ))
+      )}
+    </div>
 
       {/* Record Payment Dialog */}
       {activePaymentOrder && (
@@ -289,7 +301,7 @@ export default function OrdersPage() {
                 <p>
                   <strong>Total Order Amount:</strong> {formatCurrency(activePaymentOrder.totalAmount)}
                 </p>
-                <p className="text-[#75342B]">
+                <p className="text-burgundy-deep font-semibold">
                   <strong>Current Balance Due:</strong> {formatCurrency(activePaymentOrder.balanceDue)}
                 </p>
               </div>
@@ -404,7 +416,7 @@ export default function OrdersPage() {
                   <span>Total Amount Paid:</span>
                   <span>{formatCurrency(activeReceiptOrder.amountPaid)}</span>
                 </div>
-                <div className="flex justify-between text-[#75342B]">
+                <div className="flex justify-between text-burgundy-deep font-semibold">
                   <span>Remaining Balance:</span>
                   <span>{formatCurrency(activeReceiptOrder.balanceDue)}</span>
                 </div>
