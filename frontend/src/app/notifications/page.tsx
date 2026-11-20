@@ -13,15 +13,15 @@ import {
 import { AppShell } from "@/components/layout/app-shell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { mockNotifications } from "@/lib/mock-data";
+import { useWorkspace } from "@/context/workspace-context";
 import { NotificationItem } from "@/types";
 import { formatDate } from "@/lib/utils";
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = React.useState<NotificationItem[]>(mockNotifications);
+  const { notifications, markNotificationRead } = useWorkspace();
 
   const handleMarkAllRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
+    notifications.forEach((n) => markNotificationRead(n.id));
   };
 
   return (

@@ -12,17 +12,13 @@ interface AppShellProps {
 }
 
 export function AppShell({ children, pageTitle }: AppShellProps) {
-  const [activeBusinessId, setActiveBusinessId] = React.useState<string>("biz-1");
   const [isAddEnquiryOpen, setIsAddEnquiryOpen] = React.useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState<boolean>(false);
 
   return (
     <div className="flex min-h-screen bg-ivory-warm">
       {/* 1. Desktop Persistent Sidebar */}
-      <Sidebar
-        activeBusinessId={activeBusinessId}
-        onSelectBusiness={(id) => setActiveBusinessId(id)}
-      />
+      <Sidebar />
 
       {/* 2. Main Workspace Layout */}
       <div className="flex flex-1 flex-col overflow-hidden">

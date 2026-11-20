@@ -29,12 +29,12 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { mockCustomers, mockOrders, mockEnquiries } from "@/lib/mock-data";
+import { useWorkspace } from "@/context/workspace-context";
 import { Customer } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 export default function CustomersPage() {
-  const [customers, setCustomers] = React.useState<Customer[]>(mockCustomers);
+  const { customers, orders, resolveCustomerDuplicate } = useWorkspace();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedTag, setSelectedTag] = React.useState<string>("All");
   const [activeCustomer, setActiveCustomer] = React.useState<Customer | null>(null);
@@ -285,7 +285,7 @@ export default function CustomersPage() {
                   Order History ({activeCustomer.totalOrders})
                 </label>
                 <div className="mt-1.5 divide-y divide-border rounded-lg border border-border bg-ivory-warm">
-                  {mockOrders
+                  {orders
                     .filter((o) => o.customerId === activeCustomer.id)
                     .map((ord) => (
                       <div
@@ -310,7 +310,7 @@ export default function CustomersPage() {
                         </div>
                       </div>
                     ))}
-                  {mockOrders.filter((o) => o.customerId === activeCustomer.id).length ===
+                  {orders.filter((o) => o.customerId === activeCustomer.id).length ===
                     0 && (
                     <p className="p-3 text-xs text-ink-muted">
                       No orders confirmed yet for this customer.

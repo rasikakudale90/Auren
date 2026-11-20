@@ -32,25 +32,63 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AurenLogoMark } from "@/components/ui/auren-logo";
 
+import { useWorkspace } from "@/context/workspace-context";
+
 interface SidebarProps {
-  activeBusinessId: string;
-  onSelectBusiness: (bizId: string) => void;
+  activeBusinessId?: string;
+  onSelectBusiness?: (bizId: string) => void;
 }
 
-export function Sidebar({ activeBusinessId, onSelectBusiness }: SidebarProps) {
+export function Sidebar({ activeBusinessId: propBizId, onSelectBusiness: propSelectBiz }: SidebarProps) {
   const pathname = usePathname();
-  const currentBusiness =
-    mockBusinesses.find((b) => b.id === activeBusinessId) || mockBusinesses[0];
+  const {
+    businesses,
+    activeBusiness,
+    activeBusinessId,
+    setActiveBusinessId,
+    enquiries,
+    followUps,
+    notifications,
+  } = useWorkspace();
+
+  const currentBusiness = activeBusiness;
+  const onSelectBusiness = propSelectBiz || setActiveBusinessId;
+
+  const newEnquiriesCount = enquiries.filter((e) => e.status === "New").length;
+  const pendingFollowUpsCount = followUps.filter((f) => f.status === "Pending").length;
+  const unreadNotifsCount = notifications.filter((n) => !n.isRead).length;
 
   const navItems = [
-    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Enquiries", href: "/enquiries", icon: MessageSquare, badge: "3" },
+    {
+      label: "Dashboard",
+      href: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      label: "Enquiries",
+      href: "/enquiries",
+      icon: MessageSquare,
+      badge: newEnquiriesCount > 0 ? String(newEnquiriesCount) : undefined,
+      badgeVariant: "sage",
+    },
     { label: "Customers", href: "/customers", icon: Users },
-    { label: "Follow-ups", href: "/follow-ups", icon: Clock, badge: "1" },
+    {
+      label: "Follow-ups",
+      href: "/follow-ups",
+      icon: Clock,
+      badge: pendingFollowUpsCount > 0 ? String(pendingFollowUpsCount) : undefined,
+      badgeVariant: "burgundy",
+    },
     { label: "Orders", href: "/orders", icon: ShoppingBag },
     { label: "Products", href: "/products", icon: Package },
     { label: "Quick Replies", href: "/quick-replies", icon: Zap },
-    { label: "Notifications", href: "/notifications", icon: Bell },
+    {
+      label: "Notifications",
+      href: "/notifications",
+      icon: Bell,
+      badge: unreadNotifsCount > 0 ? String(unreadNotifsCount) : undefined,
+      badgeVariant: "sage",
+    },
     { label: "Settings", href: "/settings", icon: Settings },
   ];
 
@@ -92,7 +130,7 @@ export function Sidebar({ activeBusinessId, onSelectBusiness }: SidebarProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="start">
             <DropdownMenuLabel>Your Workspaces</DropdownMenuLabel>
-            {mockBusinesses.map((biz) => (
+            {businesses.map((biz) => (
               <DropdownMenuItem
                 key={biz.id}
                 onClick={() => onSelectBusiness(biz.id)}
@@ -150,7 +188,9 @@ export function Sidebar({ activeBusinessId, onSelectBusiness }: SidebarProps) {
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-0.2 text-[10px] font-bold",
-                    isActive
+                    item.badgeVariant === "burgundy"
+                      ? "border border-burgundy-border bg-burgundy-subtle text-burgundy-deep"
+                      : isActive
                       ? "bg-sage-accent text-ivory-soft"
                       : "bg-ivory-muted text-ink-muted group-hover:bg-pastel-sage group-hover:text-sage-forest"
                   )}

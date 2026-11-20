@@ -15,35 +15,32 @@ import { AppShell } from "@/components/layout/app-shell";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { mockFollowUps, mockEnquiries } from "@/lib/mock-data";
+import { useWorkspace } from "@/context/workspace-context";
 import { FollowUp } from "@/types";
 import { formatDate } from "@/lib/utils";
 
 export default function FollowUpsPage() {
-  const [followUps, setFollowUps] = React.useState<FollowUp[]>(mockFollowUps);
+  const { followUps, completeFollowUp } = useWorkspace();
   const [filter, setFilter] = React.useState<"All" | "Due Today" | "Upcoming" | "Completed">("All");
 
   const filtered = followUps.filter((f) => {
     if (filter === "Completed") return f.status === "Completed";
     if (filter === "Due Today")
-      return f.status === "Pending" && f.dueAt.includes("2026-11-18");
+      return (
+        f.status === "Pending" &&
+        (f.dueAt.includes("2026-11-18") || f.dueAt.includes("2026-11-19"))
+      );
     if (filter === "Upcoming")
-      return f.status === "Pending" && !f.dueAt.includes("2026-11-18");
+      return (
+        f.status === "Pending" &&
+        !f.dueAt.includes("2026-11-18") &&
+        !f.dueAt.includes("2026-11-19")
+      );
     return true;
   });
 
   const handleToggleComplete = (id: string) => {
-    setFollowUps((prev) =>
-      prev.map((f) =>
-        f.id === id
-          ? {
-              ...f,
-              status: f.status === "Pending" ? "Completed" : "Pending",
-              completedAt: f.status === "Pending" ? new Date().toISOString() : undefined,
-            }
-          : f
-      )
-    );
+    completeFollowUp(id);
   };
 
   return (

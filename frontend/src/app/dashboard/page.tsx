@@ -18,29 +18,24 @@ import { AppShell } from "@/components/layout/app-shell";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  mockEnquiries,
-  mockOrders,
-  mockFollowUps,
-  mockCustomers,
-  mockBusinesses,
-} from "@/lib/mock-data";
+import { useWorkspace } from "@/context/workspace-context";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 export default function DashboardPage() {
-  const currentBiz = mockBusinesses[0];
+  const { activeBusiness, enquiries, orders, followUps, isDemoMode } = useWorkspace();
+  const currentBiz = activeBusiness;
 
   // Metrics calculations
-  const totalEnquiries = mockEnquiries.length;
-  const activeOrders = mockOrders.filter(
+  const totalEnquiries = enquiries.length;
+  const activeOrders = orders.filter(
     (o) => o.status !== "Delivered" && o.status !== "Cancelled"
   ).length;
-  const dueFollowUps = mockFollowUps.filter((f) => f.status === "Pending").length;
-  const totalRevenue = mockOrders
+  const dueFollowUps = followUps.filter((f) => f.status === "Pending").length;
+  const totalRevenue = orders
     .filter((o) => o.status !== "Cancelled")
     .reduce((sum, o) => sum + o.amountPaid, 0);
 
-  const pendingPayments = mockOrders
+  const pendingPayments = orders
     .filter((o) => o.status !== "Cancelled")
     .reduce((sum, o) => sum + o.balanceDue, 0);
 
@@ -190,11 +185,16 @@ export default function DashboardPage() {
             </CardHeader>
 
             <CardContent className="space-y-3">
-              {mockEnquiries.slice(0, 4).map((enq) => (
-                <div
-                  key={enq.id}
-                  className="rounded-xl border border-border bg-ivory-soft p-4 transition-all hover:bg-ivory-muted/40 hover:shadow-subtle"
-                >
+              {enquiries.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-border p-6 text-center">
+                  <p className="text-xs text-ink-muted">No inquiries received yet for this workspace.</p>
+                </div>
+              ) : (
+                enquiries.slice(0, 4).map((enq) => (
+                  <div
+                    key={enq.id}
+                    className="rounded-xl border border-border bg-ivory-soft p-4 transition-all hover:bg-ivory-muted/40 hover:shadow-subtle"
+                  >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2">
                       <div className="flex h-7 w-7 items-center justify-center rounded-full bg-pastel-sage text-sage-forest text-xs font-bold">
@@ -267,7 +267,8 @@ export default function DashboardPage() {
                     )}
                   </div>
                 </div>
-              ))}
+              ))
+            )}
             </CardContent>
           </Card>
 
@@ -291,7 +292,7 @@ export default function DashboardPage() {
 
             <CardContent>
               <div className="divide-y divide-border rounded-xl border border-border bg-ivory-warm">
-                {mockOrders.slice(0, 3).map((ord) => (
+                {orders.slice(0, 3).map((ord) => (
                   <div
                     key={ord.id}
                     className="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between text-xs"
@@ -357,15 +358,20 @@ export default function DashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {mockFollowUps
-                .filter((f) => f.status === "Pending")
-                .map((fup) => {
-                  const isDueToday = fup.dueAt.includes("2026-11-18");
-                  return (
-                    <div
-                      key={fup.id}
-                      className="rounded-xl border border-border bg-ivory-warm p-3.5 space-y-2"
-                    >
+              {followUps.filter((f) => f.status === "Pending").length === 0 ? (
+                <div className="rounded-xl border border-dashed border-border p-6 text-center">
+                  <p className="text-xs text-ink-muted">All caught up! No pending follow-ups.</p>
+                </div>
+              ) : (
+                followUps
+                  .filter((f) => f.status === "Pending")
+                  .map((fup) => {
+                    const isDueToday = fup.dueAt.includes("2026-11-18") || fup.dueAt.includes("2026-11-19");
+                    return (
+                      <div
+                        key={fup.id}
+                        className="rounded-xl border border-border bg-ivory-warm p-3.5 space-y-2"
+                      >
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-ink-primary">
                           {fup.customerName}
@@ -388,7 +394,8 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   );
-                })}
+                })
+              )}
             </CardContent>
           </Card>
 

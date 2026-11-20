@@ -28,7 +28,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { mockOrders, mockBusinesses } from "@/lib/mock-data";
+import { useWorkspace } from "@/context/workspace-context";
 import { Order, OrderStatus, PaymentMethod, PaymentStatus } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -43,7 +43,7 @@ const ORDER_STATUSES: (OrderStatus | "All")[] = [
 ];
 
 export default function OrdersPage() {
-  const [orders, setOrders] = React.useState<Order[]>(mockOrders);
+  const { orders, recordPayment, updateOrderStatus, activeBusiness } = useWorkspace();
   const [selectedStatus, setSelectedStatus] = React.useState<OrderStatus | "All">("All");
   const [searchQuery, setSearchQuery] = React.useState("");
 
@@ -71,48 +71,20 @@ export default function OrdersPage() {
     e.preventDefault();
     if (!activePaymentOrder || paymentAmount <= 0) return;
 
-    const newAmountPaid = activePaymentOrder.amountPaid + paymentAmount;
-    const newBalanceDue = Math.max(0, activePaymentOrder.totalAmount - newAmountPaid);
-    const newPaymentStatus: PaymentStatus =
-      newBalanceDue === 0
-        ? "Paid"
-        : newAmountPaid > 0
-        ? "Partially Paid"
-        : "Unpaid";
-
-    const updated = orders.map((o) =>
-      o.id === activePaymentOrder.id
-        ? {
-            ...o,
-            amountPaid: newAmountPaid,
-            balanceDue: newBalanceDue,
-            paymentStatus: newPaymentStatus,
-            payments: [
-              ...o.payments,
-              {
-                id: `pay-${Date.now()}`,
-                orderId: o.id,
-                amount: paymentAmount,
-                method: paymentMethod,
-                recordedAt: new Date().toISOString(),
-                referenceNote: paymentRef || "Manual payment verified by owner",
-                type: "Payment" as const,
-              },
-            ],
-          }
-        : o
+    recordPayment(
+      activePaymentOrder.id,
+      paymentAmount,
+      paymentMethod,
+      paymentRef || "Manual payment verified by owner"
     );
 
-    setOrders(updated);
     setActivePaymentOrder(null);
     setPaymentAmount(0);
     setPaymentRef("");
   };
 
   const handleUpdateOrderStatus = (orderId: string, nextStatus: OrderStatus) => {
-    setOrders((prev) =>
-      prev.map((o) => (o.id === orderId ? { ...o, status: nextStatus } : o))
-    );
+    updateOrderStatus(orderId, nextStatus);
   };
 
   return (

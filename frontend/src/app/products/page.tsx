@@ -22,12 +22,12 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { mockProducts } from "@/lib/mock-data";
+import { useWorkspace } from "@/context/workspace-context";
 import { Product } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 
 export default function ProductsPage() {
-  const [products, setProducts] = React.useState<Product[]>(mockProducts);
+  const { products, addProduct } = useWorkspace();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isAddOpen, setIsAddOpen] = React.useState(false);
 
@@ -47,9 +47,7 @@ export default function ProductsPage() {
 
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    const newProd: Product = {
-      id: `prod-${Date.now()}`,
-      businessId: "biz-1",
+    addProduct({
       name,
       category,
       price,
@@ -59,8 +57,7 @@ export default function ProductsPage() {
       isArchived: false,
       imageUrl:
         "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=600&q=80",
-    };
-    setProducts([newProd, ...products]);
+    });
     setIsAddOpen(false);
     setName("");
     setPrice(1000);

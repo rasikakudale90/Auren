@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { mockFollowUps, mockNotifications } from "@/lib/mock-data";
+import { useWorkspace } from "@/context/workspace-context";
 
 interface TopBarProps {
   onOpenAddEnquiry: () => void;
@@ -24,11 +24,15 @@ export function TopBar({
   onToggleMobileMenu,
   pageTitle,
 }: TopBarProps) {
-  const dueTodayCount = mockFollowUps.filter(
-    (f) => f.status === "Pending" && f.dueAt.includes("2026-11-18")
+  const { followUps, notifications, isDemoMode, setIsDemoMode } = useWorkspace();
+
+  const dueTodayCount = followUps.filter(
+    (f) =>
+      f.status === "Pending" &&
+      (f.dueAt.includes("2026-11-18") || f.dueAt.includes("2026-11-19"))
   ).length;
 
-  const unreadNotifications = mockNotifications.filter((n) => !n.isRead).length;
+  const unreadNotifications = notifications.filter((n) => !n.isRead).length;
 
   return (
     <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-ivory-soft/90 px-4 backdrop-blur-md sm:px-6">
@@ -63,15 +67,34 @@ export function TopBar({
       </div>
 
       {/* Right: Quick Actions */}
-      <div className="flex items-center gap-2.5">
-        {/* Due Today Follow-up Pill */}
+      <div className="flex items-center gap-2 sm:gap-2.5">
+        {/* Workspace State Mode Toggle (Showcase vs Empty) */}
+        <button
+          type="button"
+          onClick={() => setIsDemoMode(!isDemoMode)}
+          className={`hidden items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all sm:inline-flex ${
+            isDemoMode
+              ? "border-beige-border bg-beige-warm text-ink-primary hover:bg-beige-subtle"
+              : "border-burgundy-border bg-burgundy-subtle text-burgundy-deep"
+          }`}
+          title="Toggle between populated demo records and blank newly-onboarded state"
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              isDemoMode ? "bg-sage-accent" : "bg-burgundy-accent"
+            }`}
+          />
+          <span>{isDemoMode ? "Showcase Data" : "Blank State"}</span>
+        </button>
+
+        {/* Due Today Follow-up Pill (Styled in Burgundy) */}
         {dueTodayCount > 0 && (
           <Link
             href="/follow-ups"
-            className="hidden items-center gap-1.5 rounded-full border border-[#E8CECB] bg-pastel-blush px-2.5 py-1 text-xs font-semibold text-[#75342B] transition-colors hover:bg-pastel-blush/80 sm:inline-flex"
+            className="hidden items-center gap-1.5 rounded-full border border-burgundy-border bg-burgundy-subtle px-2.5 py-1 text-xs font-semibold text-burgundy-deep transition-colors hover:bg-burgundy-subtle/80 sm:inline-flex"
           >
             <Clock className="h-3 w-3" />
-            <span>{dueTodayCount} due today</span>
+            <span>{dueTodayCount} due</span>
           </Link>
         )}
 

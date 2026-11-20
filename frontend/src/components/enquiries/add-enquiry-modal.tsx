@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { SourceChannel } from "@/types";
 import { mockProducts, mockCustomers } from "@/lib/mock-data";
+import { useWorkspace } from "@/context/workspace-context";
 
 interface AddEnquiryModalProps {
   isOpen: boolean;
@@ -49,6 +50,7 @@ export function AddEnquiryModal({
   onClose,
   onSuccess,
 }: AddEnquiryModalProps) {
+  const { addEnquiry } = useWorkspace();
   const [selectedChannel, setSelectedChannel] = React.useState<SourceChannel>("Instagram");
   const [activeTab, setActiveTab] = React.useState<"manual" | "paste" | "screenshot">("paste");
 
@@ -106,6 +108,26 @@ export function AddEnquiryModal({
 
   const handleSaveEnquiry = () => {
     setSaveSuccess(true);
+    addEnquiry({
+      customerName: customerName.trim() || "Anonymous Inquiry",
+      customerHandle: customerHandle.trim() || undefined,
+      customerPhone: customerPhone.trim() || undefined,
+      sourceChannel: selectedChannel,
+      status: "New",
+      originalMessage:
+        rawText.trim() ||
+        (uploadedFiles.length > 0
+          ? "[Screenshot Capture: Incoming Customer Inquiry]"
+          : "Manual entry recorded by owner"),
+      messageNotes: notes.trim() || undefined,
+      productInterest: productInterest.trim() || undefined,
+      variant: variant.trim() || undefined,
+      quantity: quantity || 1,
+      expectedValue: expectedValue === "" ? undefined : Number(expectedValue),
+      isAiExtracted: extractionDone,
+      screenshots: uploadedFiles,
+    });
+
     setTimeout(() => {
       setSaveSuccess(false);
       onClose();
@@ -122,7 +144,7 @@ export function AddEnquiryModal({
       setNotes("");
       setExtractionDone(false);
       setUploadedFiles([]);
-    }, 900);
+    }, 700);
   };
 
   return (

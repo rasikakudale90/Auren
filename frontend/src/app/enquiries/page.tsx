@@ -27,7 +27,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { mockEnquiries, mockCustomers, mockProducts } from "@/lib/mock-data";
+import { useWorkspace } from "@/context/workspace-context";
 import { Enquiry, EnquiryStatus, SourceChannel } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
@@ -51,7 +51,7 @@ const CHANNELS: (SourceChannel | "All")[] = [
 ];
 
 export default function EnquiriesPage() {
-  const [enquiries, setEnquiries] = React.useState<Enquiry[]>(mockEnquiries);
+  const { enquiries, updateEnquiryStatus, convertEnquiryToOrder, products } = useWorkspace();
   const [selectedStatus, setSelectedStatus] = React.useState<EnquiryStatus | "All">("All");
   const [selectedChannel, setSelectedChannel] = React.useState<SourceChannel | "All">("All");
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -83,10 +83,7 @@ export default function EnquiriesPage() {
 
   const handleUpdateStatus = (newStatus: EnquiryStatus) => {
     if (!activeEnquiry) return;
-    const updated = enquiries.map((e) =>
-      e.id === activeEnquiry.id ? { ...e, status: newStatus } : e
-    );
-    setEnquiries(updated);
+    updateEnquiryStatus(activeEnquiry.id, newStatus);
     setActiveEnquiry({ ...activeEnquiry, status: newStatus });
   };
 
@@ -100,17 +97,26 @@ export default function EnquiriesPage() {
     if (!convertingEnquiry) return;
     setOrderSuccess(true);
     setTimeout(() => {
-      // Mark enquiry as converted
-      const updated = enquiries.map((e) =>
-        e.id === convertingEnquiry.id ? { ...e, status: "Converted" as EnquiryStatus } : e
-      );
-      setEnquiries(updated);
+      convertEnquiryToOrder(convertingEnquiry.id, {
+        items: [
+          {
+            productId: products[0]?.id || "prod-1",
+            productName: convertingEnquiry.productInterest || "Custom Order Item",
+            variant: convertingEnquiry.variant || "Standard",
+            quantity: orderQuantity,
+            unitPrice: Math.round(orderAgreedPrice / Math.max(1, orderQuantity)),
+            lineTotal: orderAgreedPrice,
+          },
+        ],
+        deliveryCharge: 150,
+        notes: `Converted from ${convertingEnquiry.sourceChannel} enquiry`,
+      });
       setOrderSuccess(false);
       setConvertingEnquiry(null);
       if (activeEnquiry?.id === convertingEnquiry.id) {
         setActiveEnquiry({ ...activeEnquiry, status: "Converted" });
       }
-    }, 800);
+    }, 600);
   };
 
   return (
