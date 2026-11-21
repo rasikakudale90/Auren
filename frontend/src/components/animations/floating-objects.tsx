@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import gsap from "gsap";
 import {
   Sparkles,
   ShoppingBag,
@@ -20,123 +19,138 @@ export function FloatingObjects() {
   const alertRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const prefersReducedMotion =
-      typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (prefersReducedMotion) return;
 
-    const ctx = gsap.context(() => {
-      // 1. Continuous Idle Floating Animations
-      if (sealRef.current) {
-        gsap.to(sealRef.current, {
-          y: -14,
-          rotation: 3,
-          duration: 4.2,
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut",
-        });
-      }
+    let cleanupCtx: (() => void) | undefined;
+    let removeMouseListener: (() => void) | undefined;
 
-      if (orderRef.current) {
-        gsap.to(orderRef.current, {
-          y: 12,
-          rotation: -2.5,
-          duration: 3.8,
-          delay: 0.5,
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut",
-        });
-      }
+    import("gsap")
+      .then(({ default: gsap }) => {
+        const ctx = gsap.context(() => {
+          // 1. Continuous Idle Floating Animations
+          if (sealRef.current) {
+            gsap.to(sealRef.current, {
+              y: -14,
+              rotation: 3,
+              duration: 4.2,
+              yoyo: true,
+              repeat: -1,
+              ease: "sine.inOut",
+            });
+          }
 
-      if (inquiryRef.current) {
-        gsap.to(inquiryRef.current, {
-          y: -12,
-          rotation: -3,
-          duration: 4.6,
-          delay: 1.0,
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut",
-        });
-      }
+          if (orderRef.current) {
+            gsap.to(orderRef.current, {
+              y: 12,
+              rotation: -2.5,
+              duration: 3.8,
+              delay: 0.5,
+              yoyo: true,
+              repeat: -1,
+              ease: "sine.inOut",
+            });
+          }
 
-      if (alertRef.current) {
-        gsap.to(alertRef.current, {
-          y: 15,
-          rotation: 2.5,
-          duration: 4.0,
-          delay: 1.4,
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut",
-        });
-      }
-    }, containerRef);
+          if (inquiryRef.current) {
+            gsap.to(inquiryRef.current, {
+              y: -12,
+              rotation: -3,
+              duration: 4.6,
+              delay: 1.0,
+              yoyo: true,
+              repeat: -1,
+              ease: "sine.inOut",
+            });
+          }
 
-    // 2. Mouse Parallax Tilt on Viewport Movement
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const relX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2 || 1);
-      const relY = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2 || 1);
+          if (alertRef.current) {
+            gsap.to(alertRef.current, {
+              y: 15,
+              rotation: 2.5,
+              duration: 4.0,
+              delay: 1.4,
+              yoyo: true,
+              repeat: -1,
+              ease: "sine.inOut",
+            });
+          }
+        }, containerRef);
 
-      if (sealRef.current) {
-        gsap.to(sealRef.current, {
-          x: relX * 22,
-          y: relY * 18,
-          rotateX: -relY * 12,
-          rotateY: relX * 14,
-          duration: 0.8,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
+        cleanupCtx = () => ctx.revert();
 
-      if (orderRef.current) {
-        gsap.to(orderRef.current, {
-          x: -relX * 26,
-          y: -relY * 20,
-          rotateX: relY * 15,
-          rotateY: -relX * 16,
-          duration: 0.9,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
+        // 2. Mouse Parallax Tilt on Viewport Movement
+        const handleMouseMove = (e: MouseEvent) => {
+          if (!containerRef.current) return;
+          const rect = containerRef.current.getBoundingClientRect();
+          const relX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2 || 1);
+          const relY = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2 || 1);
 
-      if (inquiryRef.current) {
-        gsap.to(inquiryRef.current, {
-          x: relX * 18,
-          y: -relY * 24,
-          rotateX: -relY * 14,
-          rotateY: relX * 18,
-          duration: 1.0,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
+          if (sealRef.current) {
+            gsap.to(sealRef.current, {
+              x: relX * 22,
+              y: relY * 18,
+              rotateX: -relY * 12,
+              rotateY: relX * 14,
+              duration: 0.8,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          }
 
-      if (alertRef.current) {
-        gsap.to(alertRef.current, {
-          x: -relX * 20,
-          y: relY * 22,
-          rotateX: relY * 12,
-          rotateY: -relX * 14,
-          duration: 0.85,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
-    };
+          if (orderRef.current) {
+            gsap.to(orderRef.current, {
+              x: -relX * 26,
+              y: -relY * 20,
+              rotateX: relY * 15,
+              rotateY: -relX * 16,
+              duration: 0.9,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          }
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+          if (inquiryRef.current) {
+            gsap.to(inquiryRef.current, {
+              x: relX * 18,
+              y: -relY * 24,
+              rotateX: -relY * 14,
+              rotateY: relX * 18,
+              duration: 1.0,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          }
+
+          if (alertRef.current) {
+            gsap.to(alertRef.current, {
+              x: -relX * 20,
+              y: relY * 22,
+              rotateX: relY * 12,
+              rotateY: -relX * 14,
+              duration: 0.85,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          }
+        };
+
+        window.addEventListener("mousemove", handleMouseMove, { passive: true });
+        removeMouseListener = () => {
+          window.removeEventListener("mousemove", handleMouseMove);
+        };
+      })
+      .catch((err) => {
+        console.warn("GSAP floating animation fallback:", err);
+      });
 
     return () => {
-      ctx.revert();
-      window.removeEventListener("mousemove", handleMouseMove);
+      if (cleanupCtx) cleanupCtx();
+      if (removeMouseListener) removeMouseListener();
     };
   }, []);
 

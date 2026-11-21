@@ -18,7 +18,12 @@ import {
 } from "lucide-react";
 import { AurenLogoMark } from "@/components/ui/auren-logo";
 import { EditorialBackground } from "@/components/ui/editorial-background";
-import { FloatingObjects } from "@/components/animations/floating-objects";
+import dynamic from "next/dynamic";
+
+const FloatingObjects = dynamic(
+  () => import("@/components/animations/floating-objects").then((mod) => mod.FloatingObjects),
+  { ssr: false }
+);
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);

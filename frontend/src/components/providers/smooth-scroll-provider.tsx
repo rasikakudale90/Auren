@@ -1,36 +1,43 @@
 "use client";
 
 import * as React from "react";
-import Lenis from "lenis";
 
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
-    // Only initialize in browser environment and if user prefers standard motion
+    if (typeof window === "undefined") return;
+
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return;
 
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-      wheelMultiplier: 0.9,
-      touchMultiplier: 1.5,
-    });
-
+    let lenisInstance: any = null;
     let animationFrameId: number;
 
-    function raf(time: number) {
-      lenis.raf(time);
-      animationFrameId = requestAnimationFrame(raf);
-    }
+    import("lenis")
+      .then(({ default: Lenis }) => {
+        lenisInstance = new Lenis({
+          duration: 1.1,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: "vertical",
+          gestureOrientation: "vertical",
+          smoothWheel: true,
+          wheelMultiplier: 0.9,
+          touchMultiplier: 1.5,
+        });
 
-    animationFrameId = requestAnimationFrame(raf);
+        function raf(time: number) {
+          lenisInstance?.raf(time);
+          animationFrameId = requestAnimationFrame(raf);
+        }
+
+        animationFrameId = requestAnimationFrame(raf);
+      })
+      .catch((err) => {
+        console.warn("Lenis smooth scroll fallback to native:", err);
+      });
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      lenis.destroy();
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      if (lenisInstance) lenisInstance.destroy();
     };
   }, []);
 
