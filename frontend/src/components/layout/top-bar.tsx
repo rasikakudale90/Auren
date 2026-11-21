@@ -35,20 +35,20 @@ export function TopBar({
   const unreadNotifications = notifications.filter((n) => !n.isRead).length;
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-ivory-soft/90 px-4 backdrop-blur-md sm:px-6">
+    <header className="sticky top-0 z-40 flex h-16 w-full shrink-0 items-center justify-between border-b border-border bg-ivory-soft/95 px-4 backdrop-blur-md sm:px-6">
       {/* Left: Mobile trigger & Page Title */}
       <div className="flex items-center gap-3">
         {onToggleMobileMenu && (
           <button
             onClick={onToggleMobileMenu}
-            className="rounded-md p-1.5 text-ink-secondary hover:bg-ivory-muted lg:hidden"
+            className="rounded-lg p-2 text-ink-secondary hover:bg-beige-warm hover:text-burgundy-deep hover:border hover:border-burgundy-border/60 transition-all lg:hidden active:scale-95"
             aria-label="Open navigation menu"
           >
             <Menu className="h-5 w-5" />
           </button>
         )}
         <div>
-          <h1 className="font-display text-base font-semibold tracking-tight text-ink-primary sm:text-lg">
+          <h1 className="font-display text-base font-bold tracking-tight text-ink-primary sm:text-lg">
             {pageTitle || "Overview"}
           </h1>
         </div>

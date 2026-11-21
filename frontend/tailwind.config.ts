@@ -116,6 +116,27 @@ const config: Config = {
         card: "0 1px 3px 0 rgba(36, 37, 34, 0.05), 0 1px 2px -1px rgba(36, 37, 34, 0.05)",
         panel: "0 4px 6px -1px rgba(36, 37, 34, 0.05), 0 2px 4px -2px rgba(36, 37, 34, 0.05)",
         floating: "0 10px 15px -3px rgba(36, 37, 34, 0.08), 0 4px 6px -4px rgba(36, 37, 34, 0.04)",
+        glowBurgundy: "0 0 25px -4px rgba(110, 38, 57, 0.25)",
+        glowSage: "0 0 25px -4px rgba(78, 88, 65, 0.25)",
+      },
+      keyframes: {
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+        pulseAura: {
+          "0%, 100%": { opacity: "0.35", transform: "scale(1)" },
+          "50%": { opacity: "0.65", transform: "scale(1.05)" },
+        },
+        floatSubtle: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+      },
+      animation: {
+        shimmer: "shimmer 2.4s infinite linear",
+        pulseAura: "pulseAura 7s ease-in-out infinite",
+        floatSubtle: "floatSubtle 5s ease-in-out infinite",
       },
     },
   },

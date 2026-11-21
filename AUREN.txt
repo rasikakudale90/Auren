@@ -2,3 +2,10 @@ _____________ AUREN : Hero tagline: Every conversation. Every customer. Every or
 
 
 AUREN :represents a smarter, more organised way to run a business — bringing every customer conversation, enquiry, and order into one place.
+
+
+i want u to add burgendy colour to make it attractive, microinteractions, on mouse hovering effects, shimmers, 3d floating objects using GSAP as a animation engine, Lenis for smooth scrolling, alos sage green, beige, burgendy these 3 colours should be used at max level in app to make it attractive, eye-catchy.
+for landing page i want something in background tell me what we can add image or something else that will match with theme of app?
+note: remove continue with apple option, keep continue with google option only
+if i scroll down the dashboard the hamburger also gets scroll down, fix the hamburger it should not scroll
+Goal: Giving premium look and feel, trustworthy, NON Ai-generic

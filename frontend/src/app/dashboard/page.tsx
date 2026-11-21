@@ -42,33 +42,33 @@ export default function DashboardPage() {
   return (
     <AppShell pageTitle="Dashboard">
       {/* 1. Header Banner */}
-      <div className="mb-6 flex flex-col justify-between gap-4 rounded-2xl border border-border bg-gradient-to-r from-pastel-sage/50 via-ivory-soft to-ivory-soft p-6 shadow-subtle sm:flex-row sm:items-center">
+      <div className="mb-6 flex flex-col justify-between gap-4 rounded-2xl border border-beige-border bg-gradient-to-r from-pastel-sage/40 via-beige-warm to-ivory-soft p-6 shadow-subtle sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
             <span className="font-display text-xl font-bold tracking-tight text-ink-primary sm:text-2xl">
               Welcome back, Rasika
             </span>
-            <span className="rounded-full bg-pastel-sage px-2.5 py-0.5 text-[10px] font-bold text-sage-forest">
+            <span className="rounded-full bg-pastel-sage px-2.5 py-0.5 text-[10px] font-bold text-sage-forest border border-sage-light/50">
               {currentBiz.name}
             </span>
           </div>
           <p className="mt-1 text-xs text-ink-secondary">
             Here&apos;s your daily operational overview. You have{" "}
-            <span className="font-semibold text-sage-forest">1 follow-up due today</span> and 2 orders in progress.
+            <span className="font-semibold text-burgundy-deep">1 follow-up due today</span> and 2 orders in progress.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/enquiries"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-ivory-soft px-3.5 py-2 text-xs font-medium text-ink-primary shadow-subtle transition-colors hover:bg-ivory-muted"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-beige-border bg-white px-3.5 py-2 text-xs font-semibold text-ink-primary shadow-subtle transition-all hover:bg-beige-warm hover:border-burgundy-accent/40 active:scale-95"
           >
             <MessageSquare className="h-3.5 w-3.5 text-sage-accent" />
             <span>Review Inquiries</span>
           </Link>
           <Link
             href="/orders"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-sage-accent px-3.5 py-2 text-xs font-medium text-ivory-soft shadow-subtle transition-colors hover:bg-sage-hover"
+            className="shimmer-gleam inline-flex items-center gap-1.5 rounded-xl bg-sage-accent px-4 py-2 text-xs font-semibold text-white shadow-subtle transition-all hover:bg-sage-hover hover:shadow-glowSage active:scale-95"
           >
             <ShoppingBag className="h-3.5 w-3.5" />
             <span>Manage Orders</span>
@@ -76,15 +76,15 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 2. Key Operational Metrics Grid (Storeflow Inspired) */}
+      {/* 2. Key Operational Metrics Grid (Storeflow Inspired with Hover Tilt & Shimmer) */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         {/* Card 1: Enquiries */}
-        <Card>
+        <Card className="card-hover-tilt transition-all duration-300 hover:border-sage-accent/60 hover:shadow-floating">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-medium uppercase tracking-wider text-ink-muted">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
               Total Inquiries
             </CardTitle>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-pastel-blue text-[#2C4857]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-pastel-blue text-[#2C4857]">
               <MessageSquare className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -100,12 +100,12 @@ export default function DashboardPage() {
         </Card>
 
         {/* Card 2: Active Orders */}
-        <Card>
+        <Card className="card-hover-tilt transition-all duration-300 hover:border-sage-accent/60 hover:shadow-floating">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-medium uppercase tracking-wider text-ink-muted">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
               Active Orders
             </CardTitle>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-pastel-sage text-sage-forest">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-pastel-sage text-sage-forest">
               <ShoppingBag className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -119,34 +119,34 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Card 3: Due Follow-ups */}
-        <Card>
+        {/* Card 3: Due Follow-ups (Deep Burgundy Highlight) */}
+        <Card className="card-hover-tilt border-burgundy-border bg-burgundy-subtle/40 transition-all duration-300 hover:border-burgundy-accent hover:shadow-glowBurgundy">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-medium uppercase tracking-wider text-ink-muted">
+            <CardTitle className="text-xs font-bold uppercase tracking-wider text-burgundy-deep">
               Pending Follow-ups
             </CardTitle>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-burgundy-border/60 bg-burgundy-subtle text-burgundy-deep">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-burgundy-border bg-burgundy-subtle text-burgundy-deep shadow-inner">
               <Clock className="h-4 w-4" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-ink-primary font-display">
+            <div className="text-2xl font-bold text-burgundy-deep font-display">
               {dueFollowUps}
             </div>
             <p className="mt-1 text-[11px] text-burgundy-deep font-semibold flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" />
+              <AlertCircle className="h-3 w-3 text-burgundy-accent" />
               <span>1 requires action today</span>
             </p>
           </CardContent>
         </Card>
 
-        {/* Card 4: Collected Revenue */}
-        <Card>
+        {/* Card 4: Collected Revenue (Warm Beige Well) */}
+        <Card className="card-hover-tilt transition-all duration-300 hover:border-beige-border hover:shadow-floating">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-medium uppercase tracking-wider text-ink-muted">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
               Collected Revenue
             </CardTitle>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-pastel-butter text-[#5C4A1A]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-pastel-butter text-[#5C4A1A]">
               <TrendingUp className="h-4 w-4" />
             </div>
           </CardHeader>

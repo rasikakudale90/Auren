@@ -29,11 +29,11 @@ describe("LoginPage Component", () => {
     expect(screen.getByRole("button", { name: /Log In/i })).toBeInTheDocument();
   });
 
-  it("renders both Apple and Google social sign-in buttons", () => {
+  it("renders Google social sign-in button only", () => {
     render(<LoginPage />);
 
-    expect(screen.getByText("Continue with Apple")).toBeInTheDocument();
     expect(screen.getByText("Continue with Google")).toBeInTheDocument();
+    expect(screen.queryByText("Continue with Apple")).not.toBeInTheDocument();
   });
 
   it("renders Email and Password form fields with prefilled values", () => {

@@ -16,6 +16,7 @@
 | **Phase F1.5** | Editorial Palette: Warm Linen Beige & Deep Burgundy Tokens | **COMPLETED** | 100% |
 | **Phase F2** | Public Marketing & Split Authentication Routes | **COMPLETED** | 100% |
 | **Phase F3** | Authenticated Workspace Modules & State Depth (WorkspaceContext) | **COMPLETED** | 100% |
+| **Phase F4** | Kinetic Polish: GSAP 3D Floating Objects, Lenis Kinetic Scroll & Maximal Palette Blend | **COMPLETED** | 100% |
 | **Phase B0** | Spring Boot Backend & Supabase Database Scaffolding | **PENDING** | 0% |
 | **Phase B1** | Gemini Multimodal Extraction Service Integration | **PENDING** | 0% |
 
