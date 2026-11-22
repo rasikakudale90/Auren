@@ -1,7 +1,7 @@
 # AUREN — Project Progress Tracker
 
 **Repository:** `https://github.com/rasikakudale90/Auren.git`  
-**Current Milestone:** Phase F (Frontend Foundations & Core Workspace UX) — **100% COMPLETED**  
+**Current Milestone:** Phase B0 (Spring Boot Backend & Supabase Database Scaffolding) — **100% COMPLETED**  
 **Last Updated:** November 22, 2026  
 **Primary References:** `docs/AUREN_PRD.md`, `docs/AUREN_SRS.md`, `docs/AUREN_DESIGN_TOKENS_v1.1.md`, `docs/AUREN_Frontend.md`, `technical-depth.md`
 
@@ -17,12 +17,27 @@
 | **Phase F2** | Public Marketing & Split Authentication Routes | **COMPLETED** | 100% |
 | **Phase F3** | Authenticated Workspace Modules & State Depth (`WorkspaceContext`) | **COMPLETED** | 100% |
 | **Phase F4** | Kinetic Polish: GSAP 3D Floating Objects, Lenis Smooth Scroll & Fixed Header | **COMPLETED** | 100% |
-| **Phase B0** | Spring Boot Backend & Supabase Database Scaffolding | **PENDING** | 0% |
+| **Phase B0** | Spring Boot 3.3.x Backend & Supabase Database Scaffolding | **COMPLETED** | 100% |
 | **Phase B1** | Gemini Multimodal Extraction Service Integration | **PENDING** | 0% |
 
 ---
 
-## 2. Route & Screen Implementation Status (Live Audit: 16/16 Passed)
+## 2. Backend Scaffolding Implementation Status (Phase B0 Live)
+
+| Module / Component | Implementation Details & Architectural Invariants | Status |
+| :--- | :--- | :---: |
+| **Spring Boot 3.3.5 Scaffolding** | Java 21, Maven POM with Web, Security, Data JPA, Validation, PostgreSQL, Flyway, JJWT (0.12.6). | ✅ Completed |
+| **Flyway Schema Migrations** | `V1__init_schema.sql` (users, workspaces, customers, enquiries, products, orders, order_items, follow_ups, quick_replies). | ✅ Completed |
+| **30-Day Trash Retention View** | `V2__trash_retention_view.sql` dynamic SQL view calculating remaining days ($\le 30$) across all soft-deleted records. | ✅ Completed |
+| **Domain JPA Entities** | 9 mapped JPA entities with Lombok, audit timestamps, and multi-tenant workspace isolation. | ✅ Completed |
+| **Business Invariants Engine** | Order balance invariant $\text{balanceDue} = \max(0, \text{totalAmount} - \text{amountPaid})$; Customer duplicate phone/handle match & tag unionization; manual payment recording. | ✅ Completed |
+| **Spring Security & Stateless JWT** | `JwtAuthenticationFilter`, `JwtTokenProvider`, BCrypt password hashing, and CORS configured for Next.js frontend. | ✅ Completed |
+| **REST API Controller Endpoints** | `/auth/signup`, `/auth/login`, `/enquiries`, `/customers`, `/customers/merge`, `/orders`, `/orders/{id}/payments`, `/products`, `/follow-ups`, `/trash`, `/trash/restore`. | ✅ Completed |
+| **Global Error Handling** | `GlobalExceptionHandler` with standardized JSON `ApiResponse<T>` envelopes. | ✅ Completed |
+
+---
+
+## 3. Frontend Route Status (Live Audit: 16/16 Passed)
 
 | Route | Screen / Purpose | Status | UI/UX Fidelity & Verified Behavior |
 | :--- | :--- | :---: | :--- |
@@ -45,26 +60,9 @@
 
 ---
 
-## 3. Automated Test Suite Status
+## 4. Next Session Milestone: Phase B1 (Gemini Multimodal Extraction)
 
-Vitest, React Testing Library, and `@testing-library/jest-dom` are configured in `frontend/`:
-- `src/__tests__/login.test.tsx` (5 tests passing — Google only, email/password validation)
-- `src/__tests__/workspace-context.test.tsx` (6 tests passing — Multi-business isolation, reactive state)
-- `src/__tests__/screenshot-upload.test.ts` (4 tests passing — Drag-and-drop, $\le 10$MB size check)
-- `src/__tests__/customer-duplicate.test.ts` (2 tests passing — Phone match & tag union)
-- `src/__tests__/enquiries.test.ts` (3 tests passing — Status workflow transitions)
-- `src/__tests__/orders.test.ts` (3 tests passing — Order balance & payment status invariants)
-- `src/__tests__/trash-retention.test.ts` (3 tests passing — 30-day countdown, restore & empty actions)
-**Total: 7 suites, 26 tests passing with 0 errors.**  
-**Live Route Audit: 16/16 routes verified with HTTP 200 OK.**  
-**Production Build: 19/19 App Router static routes compiled.**
-
----
-
-## 4. Next Session Milestone Preview: Backend Scaffolding (Phase B0)
-
-When ready to resume in the next session, we will start **Phase B0**:
-1. Spring Boot 3.3.x backend scaffolding with Java 21 and Maven.
-2. Supabase PostgreSQL schema migration scripts matching domain invariants (`docs/AUREN_SRS.md`).
-3. Spring Security JWT integration matching user profiles.
-4. REST API controller contracts mapping to existing Next.js frontend services.
+When ready to resume in the next phase, we will implement **Phase B1**:
+1. Gemini API SDK client integration in Spring Boot backend.
+2. Multimodal prompt templates for parsing social screenshots (Instagram DMs, WhatsApp chats).
+3. Structured JSON schema extraction into editable Enquiry draft responses.
