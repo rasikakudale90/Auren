@@ -2,10 +2,12 @@ package com.auren.api.controller;
 
 import com.auren.api.dto.ApiResponse;
 import com.auren.api.dto.AuthDto;
+import com.auren.api.dto.PasswordResetDto;
 import com.auren.domain.entity.User;
 import com.auren.domain.entity.Workspace;
 import com.auren.domain.repository.UserRepository;
 import com.auren.domain.repository.WorkspaceRepository;
+import com.auren.email.service.EmailService;
 import com.auren.security.jwt.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -24,6 +27,7 @@ public class AuthController {
     private final WorkspaceRepository workspaceRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
+    private final EmailService emailService;
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<AuthDto.AuthResponse>> signup(@Valid @RequestBody AuthDto.SignupRequest req) {
@@ -93,5 +97,37 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(ApiResponse.ok(response, "Login successful"));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody PasswordResetDto.ForgotPasswordRequest req) {
+        userRepository.findByEmail(req.getEmail()).ifPresent(user -> {
+            String resetToken = tokenProvider.generateToken(user.getId(), user.getEmail(), null);
+            emailService.sendPasswordResetEmail(user.getEmail(), resetToken);
+        });
+        return ResponseEntity.ok(ApiResponse.ok(null, "If an account exists, a reset link has been dispatched to your email."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody PasswordResetDto.ResetPasswordRequest req) {
+        if (!tokenProvider.validateToken(req.getToken())) {
+            throw new IllegalArgumentException("Invalid or expired password reset token");
+        }
+        UUID userId = tokenProvider.getUserIdFromToken(req.getToken());
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setPasswordHash(passwordEncoder.encode(req.getNewPassword()));
+        userRepository.save(user);
+
+        emailService.sendSecurityAlert(user.getEmail(), "Password Changed", "Your AUREN account password was successfully updated.");
+        return ResponseEntity.ok(ApiResponse.ok(null, "Password reset successfully. You can now log in."));
+    }
+
+    @PostMapping("/verify-email")
+    public ResponseEntity<ApiResponse<Void>> verifyEmail(@Valid @RequestBody PasswordResetDto.VerifyEmailRequest req) {
+        if (!tokenProvider.validateToken(req.getToken())) {
+            throw new IllegalArgumentException("Invalid or expired verification token");
+        }
+        return ResponseEntity.ok(ApiResponse.ok(null, "Email verified successfully"));
     }
 }
