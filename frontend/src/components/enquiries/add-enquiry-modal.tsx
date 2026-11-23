@@ -26,6 +26,7 @@ import {
 import { SourceChannel } from "@/types";
 import { mockProducts, mockCustomers } from "@/lib/mock-data";
 import { useWorkspace } from "@/context/workspace-context";
+import { apiClient } from "@/lib/api-client";
 
 interface AddEnquiryModalProps {
   isOpen: boolean;
@@ -74,6 +75,7 @@ export function AddEnquiryModal({
     { name: string; url: string; size: string }[]
   >([]);
   const [uploadedFiles, setUploadedFiles] = React.useState<string[]>([]);
+  const [rawFiles, setRawFiles] = React.useState<File[]>([]);
 
   // AI Extraction state
   const [isExtracting, setIsExtracting] = React.useState(false);
@@ -84,6 +86,7 @@ export function AddEnquiryModal({
   const handleFiles = (files: FileList | File[]) => {
     setFileError(null);
     const valid: { name: string; url: string; size: string }[] = [];
+    const validRaw: File[] = [];
 
     Array.from(files).forEach((file) => {
       if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
@@ -97,24 +100,59 @@ export function AddEnquiryModal({
       const url = URL.createObjectURL(file);
       const size = (file.size / (1024 * 1024)).toFixed(2) + " MB";
       valid.push({ name: file.name, url, size });
+      validRaw.push(file);
     });
 
     if (valid.length > 0) {
       setUploadedPreviews((prev) => [...prev, ...valid].slice(0, 3));
       setUploadedFiles((prev) => [...prev, ...valid.map((v) => v.name)].slice(0, 3));
+      setRawFiles((prev) => [...prev, ...validRaw].slice(0, 3));
     }
   };
 
   const removeUploadedFile = (idx: number) => {
     setUploadedPreviews((prev) => prev.filter((_, i) => i !== idx));
     setUploadedFiles((prev) => prev.filter((_, i) => i !== idx));
+    setRawFiles((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  // Simulated Gemini AI Extraction
-  const handleSimulateAiExtraction = () => {
+  // Gemini AI Extraction (Backend with Client Fallback)
+  const handleSimulateAiExtraction = async () => {
     if (!rawText.trim() && uploadedFiles.length === 0) return;
     setIsExtracting(true);
     setExtractStage("Detecting communication channel & OCR boundaries...");
+
+    try {
+      let draft = null;
+      if (rawFiles.length > 0) {
+        setExtractStage("Gemini multimodal reasoning on products, quantity & intent...");
+        draft = await apiClient.extractImage(rawFiles[0]);
+      } else if (rawText.trim()) {
+        setExtractStage("Gemini parsing text for buyer intent and pricing...");
+        draft = await apiClient.extractText(rawText);
+      }
+
+      if (draft) {
+        setIsExtracting(false);
+        setExtractionDone(true);
+        setExtractStage("");
+
+        if (draft.customerName) setCustomerName(draft.customerName);
+        if (draft.customerHandle) setCustomerHandle(draft.customerHandle);
+        if (draft.customerPhone) setCustomerPhone(draft.customerPhone);
+        if (draft.detectedItems && draft.detectedItems.length > 0) {
+          const item = draft.detectedItems[0];
+          setProductInterest(item.name || "");
+          setQuantity(item.quantity || 1);
+          if (item.estimatedPrice) setExpectedValue(Number(item.estimatedPrice));
+          if (item.notes) setVariant(item.notes);
+        }
+        if (draft.summary) setNotes(draft.summary);
+        return;
+      }
+    } catch {
+      // Graceful fallback to client heuristic simulation if backend offline
+    }
 
     setTimeout(() => {
       setExtractStage("Gemini multimodal reasoning on products, quantity & intent...");

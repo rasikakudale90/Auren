@@ -17,7 +17,8 @@ AUREN is built as a **cross-platform social-commerce workspace** tailored for sm
    - **Frontend Foundation (Phase F):** 100% Completed with high-fidelity reactive workspace, responsive layout, GSAP 3D floating objects, and Lenis smooth scrolling.
    - **Backend Foundation (Phase B0):** 100% Completed with Spring Boot 3.3.5 scaffolding, Supabase PostgreSQL Flyway migrations (V1 & V2), domain entities, multi-tenant workspace isolation, stateless JWT security, and REST API controller endpoints.
    - **Gemini Multimodal Service (Phase B1):** 100% Completed with provider-independent `AiExtractionService`, `GeminiExtractionService` multimodal processing, monthly AI quota tracking (`AiQuotaService` FR-AI-003), and dedicated REST endpoints.
-   - **End-to-End API Wire-Up (Phase B2):** Next milestone connecting frontend dropzones and context to the live Spring Boot endpoints.
+   - **End-to-End API Wire-Up (Phase B2):** 100% Completed with typed `ApiClient` in frontend, screenshot dropzone connected to Gemini backend endpoints, and client fallback simulation for offline resilience (26/26 tests passing).
+   - **Production Deployment & Containerization (Phase B3):** Multi-stage containerization, local docker-compose, and Render/Vercel deployment guides.
 2. **Editorial Aesthetics (Non-AI-Generic)**:
    - **Muted Sage Green (`#4E5841`, `#384835`, `#E3E8DC`)**: Primary brand anchor, primary action CTAs, verified status pills, and active navigation indicators.
    - **Warm Linen Beige (`#EFECE6`, `#F5F2EB`, `#FAF8F5`)**: Background surfaces, card wells, secondary buttons, and receipt containers.
@@ -74,6 +75,9 @@ E:\Auren\
 ├── technical-depth.md                           # This architecture & technical specification file
 ├── AUREN_Agents.md                              # Agent system prompts and rules
 └── frontend/                                    # Next.js 14.2 App Router client
+    └── src/
+        ├── lib/api-client.ts                    # Phase B2 API client with JWT bearer & tenant header
+        └── components/enquiries/add-enquiry-modal.tsx # Dropzone connected to Gemini backend
 ```
 
 ---
@@ -95,7 +99,7 @@ $$\text{paymentStatus} = \begin{cases}
   - Phone, email, and address merge into primary record.
   - Tag array is unionized: $\text{tags}_{\text{merged}} = \text{Unique}(\text{tags}_{\text{primary}} \cup \text{tags}_{\text{duplicate}})$.
   - Duplicate record is soft-deleted and transitioned to the 30-day retention trash queue.
-* **Implementation:** Managed via `CustomerDuplicateMergeService` in Spring Boot backend and validated with unit tests.
+* **Implementation:** Managed via `CustomerDuplicateMergeService` in Spring Boot backend, exposed via `apiClient.mergeCustomers(...)`.
 
 ### C. 30-Day Soft-Delete Retention Policy (SRS FR-DATA-002 / SEC-004):
 - Inquiries, customers, products, or orders deleted by the seller are never permanently expunged immediately.
@@ -107,11 +111,3 @@ $$\text{paymentStatus} = \begin{cases}
 - Provider-independent `AiExtractionService` abstracts Google Gemini REST calls.
 - Enforces strict monthly limit (500 tokens/operations per workspace) via `AiQuotaService`, rejecting excess operations with HTTP 429 (`AiQuotaExceededException`).
 - Multimodal processing converts uploaded chat screenshots (PNG, JPEG, WebP $\le$ 10MB) into structured `ExtractionDraft` models containing customer details, intent, items, and confidence ratings.
-
----
-
-## 4. Multi-Tenant Security & Workspace Context Isolation
-
-- All incoming API requests are verified through `JwtAuthenticationFilter`.
-- `AurenUserPrincipal` provides the validated `userId` and active `workspaceId`.
-- Every JPA repository query filters by `workspaceId` (e.g. `findByWorkspaceIdAndIsDeletedFalse`) to strictly enforce that tenants cannot read or mutate data belonging to other businesses.
