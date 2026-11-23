@@ -1,10 +1,11 @@
 # AUREN — Technical Depth & Architecture Document
 
 **Author/Owner:** Rasika Kudale  
-**Last Updated:** November 22, 2026  
+**Last Updated:** November 23, 2026  
 **Stack:** 
 - **Frontend:** Next.js 14.2 (App Router), React 18, TypeScript 5.6, Tailwind CSS 3.4, Radix UI Primitives, GSAP 3.12, Lenis 1.1, Lucide Icons, Vitest 5.1, JSDOM
 - **Backend:** Java 21 LTS, Spring Boot 3.3.5, Maven, Spring Data JPA, Spring Security, Flyway, Supabase PostgreSQL, JJWT 0.12.6
+- **AI Engine:** Google Gemini 2.5 Flash / 1.5 Flash (via provider-independent abstraction `AiExtractionService`)
 
 ---
 
@@ -15,7 +16,8 @@ AUREN is built as a **cross-platform social-commerce workspace** tailored for sm
 1. **Architecture Milestone Status**:
    - **Frontend Foundation (Phase F):** 100% Completed with high-fidelity reactive workspace, responsive layout, GSAP 3D floating objects, and Lenis smooth scrolling.
    - **Backend Foundation (Phase B0):** 100% Completed with Spring Boot 3.3.5 scaffolding, Supabase PostgreSQL Flyway migrations (V1 & V2), domain entities, multi-tenant workspace isolation, stateless JWT security, and REST API controller endpoints.
-   - **Gemini Multimodal Service (Phase B1):** Next milestone for end-to-end AI screenshot extraction.
+   - **Gemini Multimodal Service (Phase B1):** 100% Completed with provider-independent `AiExtractionService`, `GeminiExtractionService` multimodal processing, monthly AI quota tracking (`AiQuotaService` FR-AI-003), and dedicated REST endpoints.
+   - **End-to-End API Wire-Up (Phase B2):** Next milestone connecting frontend dropzones and context to the live Spring Boot endpoints.
 2. **Editorial Aesthetics (Non-AI-Generic)**:
    - **Muted Sage Green (`#4E5841`, `#384835`, `#E3E8DC`)**: Primary brand anchor, primary action CTAs, verified status pills, and active navigation indicators.
    - **Warm Linen Beige (`#EFECE6`, `#F5F2EB`, `#FAF8F5`)**: Background surfaces, card wells, secondary buttons, and receipt containers.
@@ -40,8 +42,12 @@ E:\Auren\
 │   │   ├── main/
 │   │   │   ├── java/com/auren/
 │   │   │   │   ├── AurenApplication.java         # Spring Boot entry point
+│   │   │   │   ├── ai/
+│   │   │   │   │   ├── dto/                      # ExtractionDraft, DetectedItem, AiQuotaResponse
+│   │   │   │   │   ├── exception/                # AiQuotaExceededException (HTTP 429)
+│   │   │   │   │   └── service/                  # AiExtractionService, GeminiExtractionService, AiQuotaService
 │   │   │   │   ├── api/
-│   │   │   │   │   ├── controller/               # Auth, Enquiry, Customer, Order, Product, FollowUp, Trash
+│   │   │   │   │   ├── controller/               # Auth, AiExtraction, Enquiry, Customer, Order, Product, FollowUp, Trash
 │   │   │   │   │   ├── dto/                      # Typed request/response records & ApiResponse envelope
 │   │   │   │   │   └── exception/                # GlobalExceptionHandler with structured JSON responses
 │   │   │   │   ├── domain/
@@ -57,7 +63,7 @@ E:\Auren\
 │   │   │       └── db/migration/
 │   │   │           ├── V1__init_schema.sql       # PostgreSQL schema with tenant indexes
 │   │   │           └── V2__trash_retention_view.sql # Unified view for 30-day soft-delete items
-│   │   └── test/java/com/auren/                  # Unit test suites (OrderInvariants, CustomerMerge, JWT)
+│   │   └── test/java/com/auren/                  # Unit test suites (OrderInvariants, CustomerMerge, JWT, Gemini, Quota)
 ├── docs/
 │   ├── images/                                   # Authoritative visual references
 │   ├── AUREN_PRD.md                             # Product requirements and seller persona
@@ -96,6 +102,11 @@ $$\text{paymentStatus} = \begin{cases}
 - Items are tagged with `deletedAt: timestamp` and `daysRemaining: \lfloor 30 - (\text{now} - \text{deletedAt})_{\text{days}} \rfloor`.
 - Sellers can restore any item with 1 click before the 30-day window expires.
 * **Implementation:** Handled via the PostgreSQL view `v_trash_retention_items` and `TrashService.restoreItem(...)`.
+
+### D. Multimodal AI Extraction & Quota Tracking (SRS FR-AI-001, FR-AI-002, FR-AI-003):
+- Provider-independent `AiExtractionService` abstracts Google Gemini REST calls.
+- Enforces strict monthly limit (500 tokens/operations per workspace) via `AiQuotaService`, rejecting excess operations with HTTP 429 (`AiQuotaExceededException`).
+- Multimodal processing converts uploaded chat screenshots (PNG, JPEG, WebP $\le$ 10MB) into structured `ExtractionDraft` models containing customer details, intent, items, and confidence ratings.
 
 ---
 

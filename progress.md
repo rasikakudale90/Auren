@@ -1,8 +1,8 @@
 # AUREN — Project Progress Tracker
 
 **Repository:** `https://github.com/rasikakudale90/Auren.git`  
-**Current Milestone:** Phase B0 (Spring Boot Backend & Supabase Database Scaffolding) — **100% COMPLETED**  
-**Last Updated:** November 22, 2026  
+**Current Milestone:** Phase B1 (Gemini Multimodal Extraction Service Integration) — **100% COMPLETED**  
+**Last Updated:** November 23, 2026  
 **Primary References:** `docs/AUREN_PRD.md`, `docs/AUREN_SRS.md`, `docs/AUREN_DESIGN_TOKENS_v1.1.md`, `docs/AUREN_Frontend.md`, `technical-depth.md`
 
 ---
@@ -18,11 +18,24 @@
 | **Phase F3** | Authenticated Workspace Modules & State Depth (`WorkspaceContext`) | **COMPLETED** | 100% |
 | **Phase F4** | Kinetic Polish: GSAP 3D Floating Objects, Lenis Smooth Scroll & Fixed Header | **COMPLETED** | 100% |
 | **Phase B0** | Spring Boot 3.3.x Backend & Supabase Database Scaffolding | **COMPLETED** | 100% |
-| **Phase B1** | Gemini Multimodal Extraction Service Integration | **PENDING** | 0% |
+| **Phase B1** | Gemini Multimodal Extraction Service Integration | **COMPLETED** | 100% |
+| **Phase B2** | End-to-End Frontend API Integration & Wire-up | **PENDING** | 0% |
 
 ---
 
-## 2. Backend Scaffolding Implementation Status (Phase B0 Live)
+## 2. Gemini Multimodal Extraction Implementation Status (Phase B1 Live)
+
+| Module / Component | Implementation Details & Architectural Invariants | Status |
+| :--- | :--- | :---: |
+| **Provider-Independent AI Abstraction** | `AiExtractionService` contract isolating extraction logic from specific model providers. | ✅ Completed |
+| **Gemini Multimodal Extraction** | `GeminiExtractionService` with structured JSON schema prompting (`gemini-2.5-flash`), supporting image parts (PNG, JPEG, WebP) and pasted text with graceful fallback simulation. | ✅ Completed |
+| **Monthly AI Quota Enforcement** | `AiQuotaService` (SRS FR-AI-003) tracking 500-token monthly quota, throwing `AiQuotaExceededException` (HTTP 429) when exhausted. | ✅ Completed |
+| **AI REST Controller Endpoints** | `/api/v1/ai/extract/text`, `/api/v1/ai/extract/image` (max 10MB check), `/api/v1/ai/quota`. | ✅ Completed |
+| **Automated Unit Tests** | `GeminiExtractionServiceTest` and `AiQuotaServiceTest` verifying prompt building, quota increments, and fallback heuristics. | ✅ Completed |
+
+---
+
+## 3. Backend Scaffolding Status (Phase B0 Live)
 
 | Module / Component | Implementation Details & Architectural Invariants | Status |
 | :--- | :--- | :---: |
@@ -37,11 +50,11 @@
 
 ---
 
-## 3. Frontend Route Status (Live Audit: 16/16 Passed)
+## 4. Frontend Route Status (Live Audit: 16/16 Passed)
 
 | Route | Screen / Purpose | Status | UI/UX Fidelity & Verified Behavior |
 | :--- | :--- | :---: | :--- |
-| `/` | Public Marketing Landing Page | ✅ Verified (200 OK) | Complete Storeflow marketing layout: sticky nav, tactile linen noise background, ambient Burgundy & Sage breathing aura orbs, GSAP 3D floating commerce tokens with interactive mouse parallax, 4-step workflow, and FAQ. |
+| `/` | Public Marketing Landing Page | ✅ Verified (200 OK) | Storeflow marketing layout: sticky nav, tactile linen noise background, ambient Burgundy & Sage breathing aura orbs, GSAP 3D floating commerce tokens with interactive mouse parallax, 4-step workflow, and FAQ. |
 | `/login` | Authentication Screen | ✅ Verified (200 OK) | 50/50 equal-width split. Left framed image (`AurenLogin1.png`) uncropped with top Auren logo and bottom tagline 100% visible. Right panel has Google-only social sign-in (Apple removed per directive), microinteractions, and dark sage CTA. |
 | `/signup` | Seller Account Registration | ✅ Verified (200 OK) | Balanced 50/50 split matching `/login`, business category picker, and direct route to `/onboarding`. |
 | `/register` | Route Alias | ✅ Verified (200 OK) | Mirrors `/signup`. |
@@ -60,9 +73,9 @@
 
 ---
 
-## 4. Next Session Milestone: Phase B1 (Gemini Multimodal Extraction)
+## 5. Next Session Milestone: Phase B2 (End-to-End Frontend API Integration)
 
-When ready to resume in the next phase, we will implement **Phase B1**:
-1. Gemini API SDK client integration in Spring Boot backend.
-2. Multimodal prompt templates for parsing social screenshots (Instagram DMs, WhatsApp chats).
-3. Structured JSON schema extraction into editable Enquiry draft responses.
+When ready to resume, we will implement **Phase B2**:
+1. Create frontend API client in `frontend/src/lib/api-client.ts` with auto JWT header injection and workspace context scoping.
+2. Replace mock service calls in `WorkspaceContext` with live API endpoints.
+3. Test end-to-end multimodal screenshot extraction from frontend dropzone to backend Gemini service.
