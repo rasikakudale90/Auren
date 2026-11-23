@@ -1,6 +1,8 @@
 package com.auren.email.service;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -12,8 +14,9 @@ import java.util.concurrent.CompletableFuture;
  * Dispatches asynchronously without blocking the user (SRS Section 12 rules).
  */
 @Service
-@Slf4j
 public class TransactionalEmailService implements EmailService {
+    private static final Logger log = LoggerFactory.getLogger(TransactionalEmailService.class);
+
 
     @Value("${auren.email.from:noreply@auren.com}")
     private String fromEmail;

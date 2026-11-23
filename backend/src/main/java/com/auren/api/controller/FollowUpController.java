@@ -4,7 +4,6 @@ import com.auren.api.dto.ApiResponse;
 import com.auren.domain.entity.FollowUp;
 import com.auren.domain.repository.FollowUpRepository;
 import com.auren.security.jwt.AurenUserPrincipal;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +13,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/follow-ups")
-@RequiredArgsConstructor
 public class FollowUpController {
 
     private final FollowUpRepository followUpRepository;
+    public FollowUpController(FollowUpRepository followUpRepository) {
+        this.followUpRepository = followUpRepository;
+    }
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<FollowUp>>> listFollowUps(

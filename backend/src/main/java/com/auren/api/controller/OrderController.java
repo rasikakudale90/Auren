@@ -7,7 +7,6 @@ import com.auren.domain.repository.OrderRepository;
 import com.auren.domain.service.OrderService;
 import com.auren.security.jwt.AurenUserPrincipal;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +16,15 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/orders")
-@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    public OrderController(OrderRepository orderRepository, OrderService orderService) {
+        this.orderRepository = orderRepository;
+        this.orderService = orderService;
+    }
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<Order>>> listOrders(

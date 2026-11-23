@@ -6,7 +6,6 @@ import com.auren.domain.entity.FollowUp;
 import com.auren.domain.entity.Order;
 import com.auren.domain.entity.TrashItem;
 import com.auren.domain.repository.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,6 @@ import java.util.UUID;
  * 30-Day Soft-Delete Retention Policy (SRS FR-DATA-002 / SEC-004)
  */
 @Service
-@RequiredArgsConstructor
 public class TrashService {
 
     private final TrashItemRepository trashItemRepository;
@@ -26,6 +24,14 @@ public class TrashService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
     private final FollowUpRepository followUpRepository;
+    public TrashService(TrashItemRepository trashItemRepository, EnquiryRepository enquiryRepository, CustomerRepository customerRepository, OrderRepository orderRepository, FollowUpRepository followUpRepository) {
+        this.trashItemRepository = trashItemRepository;
+        this.enquiryRepository = enquiryRepository;
+        this.customerRepository = customerRepository;
+        this.orderRepository = orderRepository;
+        this.followUpRepository = followUpRepository;
+    }
+
 
     public List<TrashItem> getTrashItems(UUID workspaceId) {
         return trashItemRepository.findByWorkspaceIdOrderByDeletedAtDesc(workspaceId);

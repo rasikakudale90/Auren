@@ -6,7 +6,6 @@ import com.auren.domain.entity.Product;
 import com.auren.importer.dto.CsvValidationResult;
 import com.auren.importer.service.CsvImportService;
 import com.auren.security.jwt.AurenUserPrincipal;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +17,13 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/import")
-@RequiredArgsConstructor
 public class ImportController {
 
     private final CsvImportService csvImportService;
+    public ImportController(CsvImportService csvImportService) {
+        this.csvImportService = csvImportService;
+    }
+
 
     @PostMapping(value = "/customers", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<CsvValidationResult<Customer>>> importCustomers(

@@ -1,10 +1,12 @@
 package com.auren.ai.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.auren.ai.dto.DetectedItem;
 import com.auren.ai.dto.ExtractionDraft;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,9 @@ import java.util.*;
  * Falls back to high-fidelity client simulation if API key is not configured.
  */
 @Service
-@Slf4j
 public class GeminiExtractionService implements AiExtractionService {
+    private static final Logger log = LoggerFactory.getLogger(GeminiExtractionService.class);
+
 
     private final RestClient restClient;
     private final ObjectMapper objectMapper;

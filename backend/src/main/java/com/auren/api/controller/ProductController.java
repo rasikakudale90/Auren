@@ -4,7 +4,6 @@ import com.auren.api.dto.ApiResponse;
 import com.auren.domain.entity.Product;
 import com.auren.domain.repository.ProductRepository;
 import com.auren.security.jwt.AurenUserPrincipal;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +13,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/products")
-@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductRepository productRepository;
+    public ProductController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<Product>>> listProducts(

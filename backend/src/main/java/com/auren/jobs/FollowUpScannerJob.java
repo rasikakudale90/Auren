@@ -1,9 +1,10 @@
 package com.auren.jobs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.auren.domain.entity.FollowUp;
 import com.auren.domain.repository.FollowUpRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +17,15 @@ import java.util.List;
  * Runs hourly.
  */
 @Component
-@RequiredArgsConstructor
-@Slf4j
 public class FollowUpScannerJob {
+    private static final Logger log = LoggerFactory.getLogger(FollowUpScannerJob.class);
+
 
     private final FollowUpRepository followUpRepository;
+    public FollowUpScannerJob(FollowUpRepository followUpRepository) {
+        this.followUpRepository = followUpRepository;
+    }
+
 
     @Scheduled(cron = "${auren.jobs.followup-scanner.cron:0 0 * * * ?}")
     public void scanDueFollowUps() {

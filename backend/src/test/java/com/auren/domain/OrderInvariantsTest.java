@@ -34,7 +34,7 @@ class OrderInvariantsTest {
 
         order.calculateBalanceAndStatus();
 
-        assertEquals(BigDecimal.ZERO, order.getBalanceDue());
+        assertEquals(0, BigDecimal.ZERO.compareTo(order.getBalanceDue()));
         assertEquals("PAID", order.getPaymentStatus());
     }
 

@@ -4,7 +4,6 @@ import com.auren.api.dto.ApiResponse;
 import com.auren.security.jwt.AurenUserPrincipal;
 import com.auren.storage.dto.FileUploadResponse;
 import com.auren.storage.service.FileStorageService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,10 +15,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/files")
-@RequiredArgsConstructor
 public class FileController {
 
     private final FileStorageService fileStorageService;
+    public FileController(FileStorageService fileStorageService) {
+        this.fileStorageService = fileStorageService;
+    }
+
 
     private static final List<String> ALLOWED_TYPES = List.of(
             "image/png", "image/jpeg", "image/jpg", "image/webp"

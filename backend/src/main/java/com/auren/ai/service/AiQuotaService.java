@@ -4,7 +4,6 @@ import com.auren.ai.dto.AiQuotaResponse;
 import com.auren.ai.exception.AiQuotaExceededException;
 import com.auren.domain.entity.Workspace;
 import com.auren.domain.repository.WorkspaceRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +13,13 @@ import java.util.UUID;
  * Enforces SRS FR-AI-003: AI Quota Tracking & Monthly Limits.
  */
 @Service
-@RequiredArgsConstructor
 public class AiQuotaService {
 
     private final WorkspaceRepository workspaceRepository;
+    public AiQuotaService(WorkspaceRepository workspaceRepository) {
+        this.workspaceRepository = workspaceRepository;
+    }
+
 
     public AiQuotaResponse getQuota(UUID workspaceId) {
         Workspace workspace = workspaceRepository.findById(workspaceId)

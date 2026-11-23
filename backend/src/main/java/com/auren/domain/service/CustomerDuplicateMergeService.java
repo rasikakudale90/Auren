@@ -2,7 +2,6 @@ package com.auren.domain.service;
 
 import com.auren.domain.entity.Customer;
 import com.auren.domain.repository.CustomerRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +14,13 @@ import java.util.*;
  * Duplicate record is soft-deleted and transitioned to the 30-day retention trash queue.
  */
 @Service
-@RequiredArgsConstructor
 public class CustomerDuplicateMergeService {
 
     private final CustomerRepository customerRepository;
+    public CustomerDuplicateMergeService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
 
     @Transactional
     public Customer mergeDuplicates(UUID workspaceId, UUID primaryCustomerId, UUID duplicateCustomerId) {

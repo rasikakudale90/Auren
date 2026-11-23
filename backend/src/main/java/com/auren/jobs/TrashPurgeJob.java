@@ -1,5 +1,8 @@
 package com.auren.jobs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.auren.domain.entity.Customer;
 import com.auren.domain.entity.Enquiry;
 import com.auren.domain.entity.FollowUp;
@@ -8,8 +11,6 @@ import com.auren.domain.repository.CustomerRepository;
 import com.auren.domain.repository.EnquiryRepository;
 import com.auren.domain.repository.FollowUpRepository;
 import com.auren.domain.repository.OrderRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +25,21 @@ import java.util.List;
  * Runs daily at 02:00 AM.
  */
 @Component
-@RequiredArgsConstructor
-@Slf4j
 public class TrashPurgeJob {
+    private static final Logger log = LoggerFactory.getLogger(TrashPurgeJob.class);
+
 
     private final EnquiryRepository enquiryRepository;
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
     private final FollowUpRepository followUpRepository;
+    public TrashPurgeJob(EnquiryRepository enquiryRepository, CustomerRepository customerRepository, OrderRepository orderRepository, FollowUpRepository followUpRepository) {
+        this.enquiryRepository = enquiryRepository;
+        this.customerRepository = customerRepository;
+        this.orderRepository = orderRepository;
+        this.followUpRepository = followUpRepository;
+    }
+
 
     @Scheduled(cron = "${auren.jobs.trash-purge.cron:0 0 2 * * ?}")
     @Transactional

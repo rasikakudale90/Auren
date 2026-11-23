@@ -1,5 +1,8 @@
 package com.auren.api.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.auren.ai.dto.AiQuotaResponse;
 import com.auren.ai.dto.ExtractionDraft;
 import com.auren.ai.service.AiExtractionService;
@@ -8,8 +11,6 @@ import com.auren.api.dto.AiExtractionDto;
 import com.auren.api.dto.ApiResponse;
 import com.auren.security.jwt.AurenUserPrincipal;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,12 +22,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ai")
-@RequiredArgsConstructor
-@Slf4j
 public class AiExtractionController {
+    private static final Logger log = LoggerFactory.getLogger(AiExtractionController.class);
+
 
     private final AiExtractionService aiExtractionService;
     private final AiQuotaService aiQuotaService;
+    public AiExtractionController(AiExtractionService aiExtractionService, AiQuotaService aiQuotaService) {
+        this.aiExtractionService = aiExtractionService;
+        this.aiQuotaService = aiQuotaService;
+    }
+
 
     private static final List<String> ALLOWED_IMAGE_TYPES = List.of(
             "image/png", "image/jpeg", "image/jpg", "image/webp"

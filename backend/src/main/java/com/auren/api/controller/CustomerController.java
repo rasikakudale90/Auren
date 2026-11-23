@@ -7,7 +7,6 @@ import com.auren.domain.repository.CustomerRepository;
 import com.auren.domain.service.CustomerDuplicateMergeService;
 import com.auren.security.jwt.AurenUserPrincipal;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +16,15 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/customers")
-@RequiredArgsConstructor
 public class CustomerController {
 
     private final CustomerRepository customerRepository;
     private final CustomerDuplicateMergeService mergeService;
+    public CustomerController(CustomerRepository customerRepository, CustomerDuplicateMergeService mergeService) {
+        this.customerRepository = customerRepository;
+        this.mergeService = mergeService;
+    }
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<Customer>>> listCustomers(

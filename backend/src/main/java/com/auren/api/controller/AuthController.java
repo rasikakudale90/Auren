@@ -10,7 +10,6 @@ import com.auren.domain.repository.WorkspaceRepository;
 import com.auren.email.service.EmailService;
 import com.auren.security.jwt.JwtTokenProvider;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
     private final UserRepository userRepository;
@@ -28,6 +26,14 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     private final EmailService emailService;
+    public AuthController(UserRepository userRepository, WorkspaceRepository workspaceRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider, EmailService emailService) {
+        this.userRepository = userRepository;
+        this.workspaceRepository = workspaceRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenProvider = tokenProvider;
+        this.emailService = emailService;
+    }
+
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<AuthDto.AuthResponse>> signup(@Valid @RequestBody AuthDto.SignupRequest req) {

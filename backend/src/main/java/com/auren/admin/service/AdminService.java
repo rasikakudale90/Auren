@@ -4,7 +4,6 @@ import com.auren.admin.dto.AdminMetricsResponse;
 import com.auren.domain.entity.Feedback;
 import com.auren.domain.entity.User;
 import com.auren.domain.repository.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +14,6 @@ import java.util.UUID;
  * Implements SRS Section 5.14 Platform Administration & Privacy-Safe Metrics.
  */
 @Service
-@RequiredArgsConstructor
 public class AdminService {
 
     private final UserRepository userRepository;
@@ -23,6 +21,14 @@ public class AdminService {
     private final OrderRepository orderRepository;
     private final EnquiryRepository enquiryRepository;
     private final FeedbackRepository feedbackRepository;
+    public AdminService(UserRepository userRepository, WorkspaceRepository workspaceRepository, OrderRepository orderRepository, EnquiryRepository enquiryRepository, FeedbackRepository feedbackRepository) {
+        this.userRepository = userRepository;
+        this.workspaceRepository = workspaceRepository;
+        this.orderRepository = orderRepository;
+        this.enquiryRepository = enquiryRepository;
+        this.feedbackRepository = feedbackRepository;
+    }
+
 
     public AdminMetricsResponse getPlatformMetrics() {
         return AdminMetricsResponse.builder()

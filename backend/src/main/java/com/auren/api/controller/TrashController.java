@@ -4,7 +4,6 @@ import com.auren.api.dto.ApiResponse;
 import com.auren.domain.entity.TrashItem;
 import com.auren.domain.service.TrashService;
 import com.auren.security.jwt.AurenUserPrincipal;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +13,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/trash")
-@RequiredArgsConstructor
 public class TrashController {
 
     private final TrashService trashService;
+    public TrashController(TrashService trashService) {
+        this.trashService = trashService;
+    }
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<TrashItem>>> getTrash(

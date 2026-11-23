@@ -7,7 +7,6 @@ import com.auren.domain.repository.CustomerRepository;
 import com.auren.domain.repository.ProductRepository;
 import com.auren.domain.repository.WorkspaceRepository;
 import com.auren.importer.dto.CsvValidationResult;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +17,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
 public class CsvImportService {
 
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final WorkspaceRepository workspaceRepository;
+    public CsvImportService(CustomerRepository customerRepository, ProductRepository productRepository, WorkspaceRepository workspaceRepository) {
+        this.customerRepository = customerRepository;
+        this.productRepository = productRepository;
+        this.workspaceRepository = workspaceRepository;
+    }
+
 
     @Transactional
     public CsvValidationResult<Customer> importCustomers(UUID workspaceId, byte[] csvBytes, boolean commit) {

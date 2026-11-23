@@ -1,9 +1,10 @@
 package com.auren.jobs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.auren.domain.entity.Workspace;
 import com.auren.domain.repository.WorkspaceRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +16,15 @@ import java.util.List;
  * Resets monthly AI quotas on the 1st day of every month at midnight.
  */
 @Component
-@RequiredArgsConstructor
-@Slf4j
 public class AiQuotaResetJob {
+    private static final Logger log = LoggerFactory.getLogger(AiQuotaResetJob.class);
+
 
     private final WorkspaceRepository workspaceRepository;
+    public AiQuotaResetJob(WorkspaceRepository workspaceRepository) {
+        this.workspaceRepository = workspaceRepository;
+    }
+
 
     @Scheduled(cron = "${auren.jobs.quota-reset.cron:0 0 0 1 * ?}")
     @Transactional

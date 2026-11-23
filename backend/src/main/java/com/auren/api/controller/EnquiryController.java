@@ -4,7 +4,6 @@ import com.auren.api.dto.ApiResponse;
 import com.auren.domain.entity.Enquiry;
 import com.auren.domain.repository.EnquiryRepository;
 import com.auren.security.jwt.AurenUserPrincipal;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +13,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/enquiries")
-@RequiredArgsConstructor
 public class EnquiryController {
 
     private final EnquiryRepository enquiryRepository;
+    public EnquiryController(EnquiryRepository enquiryRepository) {
+        this.enquiryRepository = enquiryRepository;
+    }
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<Enquiry>>> listEnquiries(

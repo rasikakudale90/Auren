@@ -1,7 +1,9 @@
 package com.auren.storage.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.auren.storage.dto.FileUploadResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,9 @@ import java.util.UUID;
  * Enforces private bucket access, signed URLs (15-min default), and offline local fallback.
  */
 @Service
-@Slf4j
 public class SupabaseStorageService implements FileStorageService {
+    private static final Logger log = LoggerFactory.getLogger(SupabaseStorageService.class);
+
 
     @Value("${auren.storage.supabase.url:${SUPABASE_STORAGE_URL:}}")
     private String supabaseUrl;

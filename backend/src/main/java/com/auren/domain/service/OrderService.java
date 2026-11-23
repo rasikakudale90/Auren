@@ -2,7 +2,6 @@ package com.auren.domain.service;
 
 import com.auren.domain.entity.Order;
 import com.auren.domain.repository.OrderRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +14,13 @@ import java.util.UUID;
  * Manual payment recording (Cash / UPI / Bank Transfer)
  */
 @Service
-@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
 
     @Transactional
     public Order recordPayment(UUID workspaceId, UUID orderId, BigDecimal paymentAmount, String paymentMethod) {
