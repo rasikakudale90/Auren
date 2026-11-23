@@ -1,5 +1,6 @@
 package com.auren.api.exception;
 
+import com.auren.ai.exception.AiQuotaExceededException;
 import com.auren.api.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,11 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AiQuotaExceededException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAiQuotaExceeded(AiQuotaExceededException ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ApiResponse.error(ex.getMessage()));
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
