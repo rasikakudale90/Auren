@@ -1,7 +1,7 @@
 # AUREN — Project Progress Tracker
 
 **Repository:** `https://github.com/rasikakudale90/Auren.git`  
-**Current Milestone:** Phase B2 (End-to-End Frontend API Integration & Wire-up) — **100% COMPLETED**  
+**Current Milestone:** Phase B3 (Production Deployment & Containerization) — **100% COMPLETED**  
 **Last Updated:** November 23, 2026  
 **Primary References:** `docs/AUREN_PRD.md`, `docs/AUREN_SRS.md`, `docs/AUREN_DESIGN_TOKENS_v1.1.md`, `docs/AUREN_Frontend.md`, `technical-depth.md`
 
@@ -20,11 +20,22 @@
 | **Phase B0** | Spring Boot 3.3.x Backend & Supabase Database Scaffolding | **COMPLETED** | 100% |
 | **Phase B1** | Gemini Multimodal Extraction Service Integration | **COMPLETED** | 100% |
 | **Phase B2** | End-to-End Frontend API Integration & Wire-up | **COMPLETED** | 100% |
-| **Phase B3** | Production Deployment & Containerization | **PENDING** | 0% |
+| **Phase B3** | Production Deployment & Containerization | **COMPLETED** | 100% |
 
 ---
 
-## 2. End-to-End API Integration (Phase B2 Live)
+## 2. Production Deployment & Containerization (Phase B3 Live)
+
+| Module / Component | Implementation Details & Architectural Invariants | Status |
+| :--- | :--- | :---: |
+| **Multi-Stage Dockerfile** | `backend/Dockerfile` using `eclipse-temurin:21-jre-alpine` runtime and unprivileged user `spring:spring`. | ✅ Completed |
+| **Local Docker Compose** | `docker-compose.yml` orchestrating PostgreSQL 16 Alpine and backend service with healthchecks. | ✅ Completed |
+| **Render Cloud Blueprint** | `render.yaml` infrastructure-as-code specifying health check path `/api/v1/health` and auto-scaling params. | ✅ Completed |
+| **Health Check Service** | `HealthController` at `/api/v1/health` responding with service uptime, active environment profile, and timestamp. | ✅ Completed |
+
+---
+
+## 3. End-to-End API Integration (Phase B2 Live)
 
 | Module / Component | Implementation Details & Architectural Invariants | Status |
 | :--- | :--- | :---: |
@@ -35,7 +46,7 @@
 
 ---
 
-## 3. Gemini Multimodal Extraction Implementation Status (Phase B1 Live)
+## 4. Gemini Multimodal Extraction Implementation Status (Phase B1 Live)
 
 | Module / Component | Implementation Details & Architectural Invariants | Status |
 | :--- | :--- | :---: |
@@ -47,7 +58,7 @@
 
 ---
 
-## 4. Backend Scaffolding Status (Phase B0 Live)
+## 5. Backend Scaffolding Status (Phase B0 Live)
 
 | Module / Component | Implementation Details & Architectural Invariants | Status |
 | :--- | :--- | :---: |
@@ -62,9 +73,23 @@
 
 ---
 
-## 5. Next Session Milestone: Phase B3 (Production Deployment & Containerization)
+## 6. Frontend Route Status (Live Audit: 16/16 Passed)
 
-When ready to resume, we will implement **Phase B3**:
-1. Multi-stage Dockerfile for Spring Boot 3.3.x backend (`eclipse-temurin:21-jre-alpine`).
-2. Multi-container `docker-compose.yml` linking local PostgreSQL and backend service for seamless dev/testing.
-3. Production deployment documentation and environment variables guide for Supabase, Render, and Vercel.
+| Route | Screen / Purpose | Status | UI/UX Fidelity & Verified Behavior |
+| :--- | :--- | :---: | :--- |
+| `/` | Public Marketing Landing Page | ✅ Verified (200 OK) | Storeflow marketing layout: sticky nav, tactile linen noise background, ambient Burgundy & Sage breathing aura orbs, GSAP 3D floating commerce tokens with interactive mouse parallax, 4-step workflow, and FAQ. |
+| `/login` | Authentication Screen | ✅ Verified (200 OK) | 50/50 equal-width split. Left framed image (`AurenLogin1.png`) uncropped with top Auren logo and bottom tagline 100% visible. Right panel has Google-only social sign-in (Apple removed per directive), microinteractions, and dark sage CTA. |
+| `/signup` | Seller Account Registration | ✅ Verified (200 OK) | Balanced 50/50 split matching `/login`, business category picker, and direct route to `/onboarding`. |
+| `/register` | Route Alias | ✅ Verified (200 OK) | Mirrors `/signup`. |
+| `/forgot-password` | Password Recovery Flow | ✅ Verified (200 OK) | Email submission form with simulated reset instruction banner. |
+| `/verify-email` | Email Verification State | ✅ Verified (200 OK) | Verification reminder with resend countdown timer. |
+| `/onboarding` | 3-Step Business Setup Wizard | ✅ Verified (200 OK) | Step 1 (Identity), Step 2 (Regional Settings - INR/Asia:Kolkata), Step 3 (Launch Workspace). |
+| `/dashboard` | Main Operational Workspace | ✅ Verified (200 OK) | Storeflow KPI cards with hover tilt, recent inquiries feed, urgent follow-up alert banner with Burgundy styling, fully wired to `WorkspaceContext`. |
+| `/enquiries` | Inquiries Directory & Capture | ✅ Verified (200 OK) | Inquiries table, channel filters, status pills, HTML5 drag-and-drop screenshot upload with client preview, simulated Gemini multimodal extraction, editable draft review, floating bulk action bar, and "Convert to Order" flow. |
+| `/customers` | Customer Management | ✅ Verified (200 OK) | Customer cards, contact metadata, spend tracking, order history drawer, duplicate contact warning banner, and side-by-side interactive comparison & merge modal with phone consolidation. |
+| `/orders` | Order Pipeline & Payments | ✅ Verified (200 OK) | Order lifecycle stages, itemized breakdowns, manual "Record Payment" drawer (Cash/UPI/Bank Transfer balance calculator), printable receipt modal, and empty state. |
+| `/products` | Internal Product Catalogue | ✅ Verified (200 OK) | Product card grid, variant tags, stock quantities, low-stock threshold warning pills, empty state, and "Add Product" drawer. |
+| `/follow-ups` | Follow-up Task Queue | ✅ Verified (200 OK) | Date-grouped tasks (Due Today, Upcoming, Completed) with reactive checkbox state syncing, +2-day snooze action, dynamic badge decrementing, and empty state. |
+| `/quick-replies` | Reusable Message Templates | ✅ Verified (200 OK) | Categorized templates (Greeting, Pricing, Payment, Delivery) with functional 1-click clipboard copy. |
+| `/notifications`| In-App Notification Center | ✅ Verified (200 OK) | Operational alert cards (due follow-ups in Burgundy, low stock, new inquiries) with filter toggles. |
+| `/settings` | Business Settings & Preferences | ✅ Verified (200 OK) | Business profile, regional preferences (INR / Asia/Kolkata), AI quota progress bar, complete CSV export, and 30-Day Trash Retention section with restore/purge (SRS FR-DATA-002 / SEC-004). |

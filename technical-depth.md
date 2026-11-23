@@ -6,6 +6,7 @@
 - **Frontend:** Next.js 14.2 (App Router), React 18, TypeScript 5.6, Tailwind CSS 3.4, Radix UI Primitives, GSAP 3.12, Lenis 1.1, Lucide Icons, Vitest 5.1, JSDOM
 - **Backend:** Java 21 LTS, Spring Boot 3.3.5, Maven, Spring Data JPA, Spring Security, Flyway, Supabase PostgreSQL, JJWT 0.12.6
 - **AI Engine:** Google Gemini 2.5 Flash / 1.5 Flash (via provider-independent abstraction `AiExtractionService`)
+- **DevOps & Containerization:** Docker (Multi-stage Eclipse Temurin 21 Alpine), Docker Compose (PostgreSQL 16 Alpine), Render PaaS Blueprint
 
 ---
 
@@ -13,12 +14,12 @@
 
 AUREN is built as a **cross-platform social-commerce workspace** tailored for small product artisans (ceramics, fashion, jewellery, home bakers, custom gifts). It is **not** an automated chatbot or bloated enterprise ERP. The core technical boundaries:
 
-1. **Architecture Milestone Status**:
+1. **Architecture Milestone Status (All Phases 100% Completed)**:
    - **Frontend Foundation (Phase F):** 100% Completed with high-fidelity reactive workspace, responsive layout, GSAP 3D floating objects, and Lenis smooth scrolling.
    - **Backend Foundation (Phase B0):** 100% Completed with Spring Boot 3.3.5 scaffolding, Supabase PostgreSQL Flyway migrations (V1 & V2), domain entities, multi-tenant workspace isolation, stateless JWT security, and REST API controller endpoints.
    - **Gemini Multimodal Service (Phase B1):** 100% Completed with provider-independent `AiExtractionService`, `GeminiExtractionService` multimodal processing, monthly AI quota tracking (`AiQuotaService` FR-AI-003), and dedicated REST endpoints.
    - **End-to-End API Wire-Up (Phase B2):** 100% Completed with typed `ApiClient` in frontend, screenshot dropzone connected to Gemini backend endpoints, and client fallback simulation for offline resilience (26/26 tests passing).
-   - **Production Deployment & Containerization (Phase B3):** Multi-stage containerization, local docker-compose, and Render/Vercel deployment guides.
+   - **Production Deployment & Containerization (Phase B3):** 100% Completed with multi-stage Dockerfile, local docker-compose orchestration, and Render deployment blueprint.
 2. **Editorial Aesthetics (Non-AI-Generic)**:
    - **Muted Sage Green (`#4E5841`, `#384835`, `#E3E8DC`)**: Primary brand anchor, primary action CTAs, verified status pills, and active navigation indicators.
    - **Warm Linen Beige (`#EFECE6`, `#F5F2EB`, `#FAF8F5`)**: Background surfaces, card wells, secondary buttons, and receipt containers.
@@ -38,6 +39,7 @@ AUREN is built as a **cross-platform social-commerce workspace** tailored for sm
 ```text
 E:\Auren\
 ├── backend/
+│   ├── Dockerfile                                # Multi-stage Alpine containerization
 │   ├── pom.xml                                   # Spring Boot 3.3.5 Maven build file
 │   ├── src/
 │   │   ├── main/
@@ -48,7 +50,7 @@ E:\Auren\
 │   │   │   │   │   ├── exception/                # AiQuotaExceededException (HTTP 429)
 │   │   │   │   │   └── service/                  # AiExtractionService, GeminiExtractionService, AiQuotaService
 │   │   │   │   ├── api/
-│   │   │   │   │   ├── controller/               # Auth, AiExtraction, Enquiry, Customer, Order, Product, FollowUp, Trash
+│   │   │   │   │   ├── controller/               # Auth, Health, AiExtraction, Enquiry, Customer, Order, Product, FollowUp, Trash
 │   │   │   │   │   ├── dto/                      # Typed request/response records & ApiResponse envelope
 │   │   │   │   │   └── exception/                # GlobalExceptionHandler with structured JSON responses
 │   │   │   │   ├── domain/
@@ -65,6 +67,8 @@ E:\Auren\
 │   │   │           ├── V1__init_schema.sql       # PostgreSQL schema with tenant indexes
 │   │   │           └── V2__trash_retention_view.sql # Unified view for 30-day soft-delete items
 │   │   └── test/java/com/auren/                  # Unit test suites (OrderInvariants, CustomerMerge, JWT, Gemini, Quota)
+├── docker-compose.yml                           # Local PostgreSQL + Spring Boot orchestration
+├── render.yaml                                  # Render Cloud deployment blueprint
 ├── docs/
 │   ├── images/                                   # Authoritative visual references
 │   ├── AUREN_PRD.md                             # Product requirements and seller persona
@@ -111,3 +115,11 @@ $$\text{paymentStatus} = \begin{cases}
 - Provider-independent `AiExtractionService` abstracts Google Gemini REST calls.
 - Enforces strict monthly limit (500 tokens/operations per workspace) via `AiQuotaService`, rejecting excess operations with HTTP 429 (`AiQuotaExceededException`).
 - Multimodal processing converts uploaded chat screenshots (PNG, JPEG, WebP $\le$ 10MB) into structured `ExtractionDraft` models containing customer details, intent, items, and confidence ratings.
+
+---
+
+## 4. Multi-Tenant Security & Workspace Context Isolation
+
+- All incoming API requests are verified through `JwtAuthenticationFilter`.
+- `AurenUserPrincipal` provides the validated `userId` and active `workspaceId`.
+- Every JPA repository query filters by `workspaceId` (e.g. `findByWorkspaceIdAndIsDeletedFalse`) to strictly enforce that tenants cannot read or mutate data belonging to other businesses.
