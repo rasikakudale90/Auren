@@ -6,6 +6,13 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "AUREN — Social Commerce Business Assistant",
   description: "Every conversation. Every customer. Every order. One workspace.",
+  manifest: "/manifest.json",
+  themeColor: "#4E5841",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Auren",
+  },
 };
 
 export default function RootLayout({
