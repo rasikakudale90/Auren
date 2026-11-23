@@ -110,3 +110,39 @@ $$\text{paymentStatus} = \begin{cases}
 - Provider-independent `AiExtractionService` abstracts Google Gemini REST calls.
 - Enforces strict monthly limit (500 tokens/operations per workspace) via `AiQuotaService`, rejecting excess operations with HTTP 429 (`AiQuotaExceededException`).
 - Automatic monthly reset via `AiQuotaResetJob` on the 1st of every month at midnight.
+
+---
+
+## 4. Test Architecture & Automated Verification Suite
+
+### A. Pure Java POJO & JDK 24 Compatibility
+- In accordance with enterprise maintainability and JDK 24 compatibility, all models, DTOs, JPA entities, services, and controllers use explicit constructors, builders, and getters/setters without Lombok compiler plugin dependencies.
+- Maven Surefire plugin configured with `-XX:+EnableDynamicAgentLoading -Dnet.bytebuddy.experimental=true` to support Mockito byte-buddy bytecode enhancement.
+
+### B. Verification Metrics
+- **Backend Test Suite (`mvn test`):** **32 / 32 Passed** across 14 test classes:
+  - `OrderInvariantsTest` (3 tests)
+  - `CustomerDuplicateMergeServiceTest` (1 test)
+  - `JwtTokenProviderTest` (2 tests)
+  - `GeminiExtractionServiceTest` (3 tests)
+  - `AiQuotaServiceTest` (3 tests)
+  - `JobsTest` (2 tests)
+  - `FileStorageServiceTest` (1 test)
+  - `CsvImportServiceTest` (1 test)
+  - `AdminServiceTest` (2 tests)
+  - `EmailServiceTest` (2 tests)
+  - `HealthAndAdminControllerTest` (3 tests)
+  - `AuthControllerTest` (3 tests)
+  - `CustomerAndOrderControllerTest` (2 tests)
+  - `AiAndStorageControllerTest` (4 tests)
+- **Frontend Test Suite (`npm test`):** **26 / 26 Passed** across 7 Vitest suites:
+  - `workspace-context.test.tsx` (6 tests)
+  - `login.test.tsx` (5 tests)
+  - `screenshot-upload.test.ts` (4 tests)
+  - `orders.test.ts` (3 tests)
+  - `enquiries.test.ts` (3 tests)
+  - `trash-retention.test.ts` (3 tests)
+  - `customer-duplicate.test.ts` (2 tests)
+- **Postman API Test Collection (`AUREN_Backend_API.postman_collection.json`):**
+  - **22 Endpoints Verified** across 12 feature folders with automated token chaining and status assertions.
+
