@@ -1,0 +1,357 @@
+{
+  "info": {
+    "_postman_id": "auren-backend-api-v1",
+    "name": "AUREN Social-Commerce Backend API",
+    "description": "Comprehensive Postman Collection covering all endpoints, authentication flows, domain invariants, AI extraction, and admin operations per docs/AUREN_SRS.md.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "workspace_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Signup",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    pm.collectionVariables.set('workspace_id', jsonData.data.workspaceId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"artisan.test@auren.com\",\n  \"password\": \"Secret@1234\",\n  \"fullName\": \"Pooja Sharma\",\n  \"businessName\": \"Aura Studio & Crafts\",\n  \"category\": \"Ceramics & Home Decor\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/auth/signup", "host": ["{{base_url}}"], "path": ["auth", "signup"]}
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    pm.collectionVariables.set('workspace_id', jsonData.data.workspaceId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"artisan.test@auren.com\",\n  \"password\": \"Secret@1234\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"artisan.test@auren.com\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/auth/forgot-password", "host": ["{{base_url}}"], "path": ["auth", "forgot-password"]}
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{token}}\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/auth/verify-email", "host": ["{{base_url}}"], "path": ["auth", "verify-email"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Health Check",
+      "item": [
+        {
+          "name": "Get Service Health",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. AI Multimodal Extraction",
+      "item": [
+        {
+          "name": "Extract From Text",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Hey Pooja! Loved your ceramic vases from the Instagram reel. I want to buy 2 in Earthy Sage. Are they available for delivery to Mumbai? How much total?\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/ai/extract/text", "host": ["{{base_url}}"], "path": ["ai", "extract", "text"]}
+          }
+        },
+        {
+          "name": "Get AI Quota",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{base_url}}/ai/quota", "host": ["{{base_url}}"], "path": ["ai", "quota"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Customers",
+      "item": [
+        {
+          "name": "List Customers",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{base_url}}/customers", "host": ["{{base_url}}"], "path": ["customers"]}
+          }
+        },
+        {
+          "name": "Merge Duplicate Customers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"primaryCustomerId\": \"00000000-0000-0000-0000-000000000001\",\n  \"duplicateCustomerId\": \"00000000-0000-0000-0000-000000000002\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/customers/merge", "host": ["{{base_url}}"], "path": ["customers", "merge"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Enquiries",
+      "item": [
+        {
+          "name": "List Enquiries",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{base_url}}/enquiries", "host": ["{{base_url}}"], "path": ["enquiries"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Orders & Payments",
+      "item": [
+        {
+          "name": "List Orders",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{base_url}}/orders", "host": ["{{base_url}}"], "path": ["orders"]}
+          }
+        },
+        {
+          "name": "Record Manual Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentAmount\": 1500.00,\n  \"paymentMethod\": \"UPI\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/orders/00000000-0000-0000-0000-000000000001/payments", "host": ["{{base_url}}"], "path": ["orders", "00000000-0000-0000-0000-000000000001", "payments"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Products",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{base_url}}/products", "host": ["{{base_url}}"], "path": ["products"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Follow-ups",
+      "item": [
+        {
+          "name": "List Follow-ups",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{base_url}}/follow-ups", "host": ["{{base_url}}"], "path": ["follow-ups"]}
+          }
+        },
+        {
+          "name": "Snooze Follow-up (+2 Days)",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/follow-ups/00000000-0000-0000-0000-000000000001/snooze?days=2",
+              "host": ["{{base_url}}"],
+              "path": ["follow-ups", "00000000-0000-0000-0000-000000000001", "snooze"],
+              "query": [{"key": "days", "value": "2"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Trash & Retention",
+      "item": [
+        {
+          "name": "Get 30-Day Trash Items",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{base_url}}/trash", "host": ["{{base_url}}"], "path": ["trash"]}
+          }
+        },
+        {
+          "name": "Restore Trash Item",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/trash/restore?itemType=customer&itemId=00000000-0000-0000-0000-000000000001",
+              "host": ["{{base_url}}"],
+              "path": ["trash", "restore"],
+              "query": [
+                {"key": "itemType", "value": "customer"},
+                {"key": "itemId", "value": "00000000-0000-0000-0000-000000000001"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Private Object Storage",
+      "item": [
+        {
+          "name": "Generate Signed URL",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {
+              "raw": "{{base_url}}/files/url?path=test/screenshot.png&expiryMinutes=15",
+              "host": ["{{base_url}}"],
+              "path": ["files", "url"],
+              "query": [
+                {"key": "path", "value": "test/screenshot.png"},
+                {"key": "expiryMinutes", "value": "15"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. CSV Import Templates",
+      "item": [
+        {
+          "name": "Download Customer CSV Template",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/import/template/customers", "host": ["{{base_url}}"], "path": ["import", "template", "customers"]}
+          }
+        },
+        {
+          "name": "Download Product CSV Template",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/import/template/products", "host": ["{{base_url}}"], "path": ["import", "template", "products"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. Admin & Feedback",
+      "item": [
+        {
+          "name": "Get Platform Metrics",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{base_url}}/admin/metrics", "host": ["{{base_url}}"], "path": ["admin", "metrics"]}
+          }
+        },
+        {
+          "name": "Submit User Feedback",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"FEATURE_REQUEST\",\n  \"message\": \"The Warm Linen and Sage Green theme looks exceptional!\",\n  \"rating\": 5\n}"
+            },
+            "url": {"raw": "{{base_url}}/feedback", "host": ["{{base_url}}"], "path": ["feedback"]}
+          }
+        }
+      ]
+    }
+  ]
+}

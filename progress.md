@@ -1,7 +1,7 @@
 # AUREN — Project Progress Tracker
 
 **Repository:** `https://github.com/rasikakudale90/Auren.git`  
-**Current Milestone:** Phase B3 (Production Deployment & Containerization) — **100% COMPLETED**  
+**Current Milestone:** All SRS Specifications & Endpoints Completed — **100% COMPLETED**  
 **Last Updated:** November 23, 2026  
 **Primary References:** `docs/AUREN_PRD.md`, `docs/AUREN_SRS.md`, `docs/AUREN_DESIGN_TOKENS_v1.1.md`, `docs/AUREN_Frontend.md`, `technical-depth.md`
 
@@ -21,75 +21,39 @@
 | **Phase B1** | Gemini Multimodal Extraction Service Integration | **COMPLETED** | 100% |
 | **Phase B2** | End-to-End Frontend API Integration & Wire-up | **COMPLETED** | 100% |
 | **Phase B3** | Production Deployment & Containerization | **COMPLETED** | 100% |
+| **Phase R1** | PWA Manifest, Web App Metadata & Service Worker Baseline | **COMPLETED** | 100% |
+| **Phase R2** | Spring Background Jobs (30-day trash purge, monthly AI quota reset, follow-up scanner) | **COMPLETED** | 100% |
+| **Phase R3** | Private Object Storage Abstraction & Signed URLs (FR-FILE-001/002) | **COMPLETED** | 100% |
+| **Phase R4** | Transactional Email Service & Password Reset / Email Verification | **COMPLETED** | 100% |
+| **Phase R5** | CSV Customer & Product Import with Validation Preview (FR-DATA-003) | **COMPLETED** | 100% |
+| **Phase R6** | Platform Administration, Aggregate Metrics & Flyway V3 (FR-ADMIN-001–007) | **COMPLETED** | 100% |
+| **Phase R7** | Postman Integration Collection (`AUREN_Backend_API.postman_collection.json`) | **COMPLETED** | 100% |
 
 ---
 
-## 2. Production Deployment & Containerization (Phase B3 Live)
+## 2. SRS Requirement Traceability Matrix
 
-| Module / Component | Implementation Details & Architectural Invariants | Status |
-| :--- | :--- | :---: |
-| **Multi-Stage Dockerfile** | `backend/Dockerfile` using `eclipse-temurin:21-jre-alpine` runtime and unprivileged user `spring:spring`. | ✅ Completed |
-| **Local Docker Compose** | `docker-compose.yml` orchestrating PostgreSQL 16 Alpine and backend service with healthchecks. | ✅ Completed |
-| **Render Cloud Blueprint** | `render.yaml` infrastructure-as-code specifying health check path `/api/v1/health` and auto-scaling params. | ✅ Completed |
-| **Health Check Service** | `HealthController` at `/api/v1/health` responding with service uptime, active environment profile, and timestamp. | ✅ Completed |
-
----
-
-## 3. End-to-End API Integration (Phase B2 Live)
-
-| Module / Component | Implementation Details & Architectural Invariants | Status |
-| :--- | :--- | :---: |
-| **Frontend API Client** | `frontend/src/lib/api-client.ts` implementing JWT Bearer injection, `X-Workspace-Id` tenant scoping, and type-safe backend methods. | ✅ Completed |
-| **Gemini Extraction Dropzone Wire-up** | `AddEnquiryModal` connected to `/api/v1/ai/extract/image` and `/api/v1/ai/extract/text` with resilient fallback to client simulation if offline. | ✅ Completed |
-| **Domain Invariant Bridges** | Client bridges for customer merge, manual payment balance calculation, +2d follow-up snoozing, and 30-day trash restore. | ✅ Completed |
-| **Full Regression Suite** | 7 test suites, 26/26 tests passing in Vitest with zero regressions. | ✅ Completed |
+| SRS Req ID | Feature / Component | Backend Service / Controller | Test & Postman Coverage |
+| :--- | :--- | :--- | :--- |
+| **FR-AUTH-001/002** | Secure Signup / Login / JWT | `AuthController.java`, `JwtTokenProvider.java` | `JwtTokenProviderTest.java`, Postman Folder 1 |
+| **FR-AUTH-003/004** | Password Reset & Email Verification | `AuthController.java`, `TransactionalEmailService.java` | `EmailServiceTest.java`, Postman Folder 1 |
+| **FR-AI-001/002** | Gemini Multimodal Screenshot & Text Extraction | `GeminiExtractionService.java`, `AiExtractionController.java` | `GeminiExtractionServiceTest.java`, Postman Folder 3 |
+| **FR-AI-003** | Monthly AI Quota (500 tokens/mo) | `AiQuotaService.java`, `AiQuotaResetJob.java` | `AiQuotaServiceTest.java`, `JobsTest.java`, Postman Folder 3 |
+| **FR-CUST-001/002**| Customer Management & Duplicate Merge | `CustomerController.java`, `CustomerDuplicateMergeService.java` | `CustomerDuplicateMergeServiceTest.java`, Postman Folder 4 |
+| **FR-ORD-001/002** | Orders & Manual Payment Balances | `OrderController.java`, `OrderService.java`, Invariant callback | `OrderInvariantsTest.java`, Postman Folder 6 |
+| **FR-FOL-001/002** | Follow-up Tasks & +2d Snooze | `FollowUpController.java`, `FollowUpScannerJob.java` | Postman Folder 8 |
+| **FR-DATA-001/002**| CSV Data Export & Download | Frontend `/settings` CSV export handler | Verified |
+| **FR-DATA-003** | CSV Customer & Product Import with Preview | `ImportController.java`, `CsvImportService.java` | `CsvImportServiceTest.java`, Postman Folder 11 |
+| **FR-DATA-004/005**| 30-Day Trash Soft-Delete & Hard Purge | `TrashController.java`, `TrashService.java`, `TrashPurgeJob.java` | `JobsTest.java`, Postman Folder 9 |
+| **FR-FILE-001/002**| Private Object Storage & Signed URLs | `FileController.java`, `SupabaseStorageService.java` | `FileStorageServiceTest.java`, Postman Folder 10 |
+| **FR-ADMIN-001–007**| Admin Platform Metrics & Feedback | `AdminController.java`, `AdminService.java`, `FeedbackController.java` | `AdminServiceTest.java`, Postman Folder 12 |
+| **SRS 4.1 & 15** | Installable PWA Manifest & Service Worker | `manifest.json`, `sw.js`, `layout.tsx` metadata | Verified |
 
 ---
 
-## 4. Gemini Multimodal Extraction Implementation Status (Phase B1 Live)
+## 3. Ready For Full Backend Testing
 
-| Module / Component | Implementation Details & Architectural Invariants | Status |
-| :--- | :--- | :---: |
-| **Provider-Independent AI Abstraction** | `AiExtractionService` contract isolating extraction logic from specific model providers. | ✅ Completed |
-| **Gemini Multimodal Extraction** | `GeminiExtractionService` with structured JSON schema prompting (`gemini-2.5-flash`), supporting image parts (PNG, JPEG, WebP) and pasted text with graceful fallback simulation. | ✅ Completed |
-| **Monthly AI Quota Enforcement** | `AiQuotaService` (SRS FR-AI-003) tracking 500-token monthly quota, throwing `AiQuotaExceededException` (HTTP 429) when exhausted. | ✅ Completed |
-| **AI REST Controller Endpoints** | `/api/v1/ai/extract/text`, `/api/v1/ai/extract/image` (max 10MB check), `/api/v1/ai/quota`. | ✅ Completed |
-| **Automated Unit Tests** | `GeminiExtractionServiceTest` and `AiQuotaServiceTest` verifying prompt building, quota increments, and fallback heuristics. | ✅ Completed |
-
----
-
-## 5. Backend Scaffolding Status (Phase B0 Live)
-
-| Module / Component | Implementation Details & Architectural Invariants | Status |
-| :--- | :--- | :---: |
-| **Spring Boot 3.3.5 Scaffolding** | Java 21, Maven POM with Web, Security, Data JPA, Validation, PostgreSQL, Flyway, JJWT (0.12.6). | ✅ Completed |
-| **Flyway Schema Migrations** | `V1__init_schema.sql` (users, workspaces, customers, enquiries, products, orders, order_items, follow_ups, quick_replies). | ✅ Completed |
-| **30-Day Trash Retention View** | `V2__trash_retention_view.sql` dynamic SQL view calculating remaining days ($\le 30$) across all soft-deleted records. | ✅ Completed |
-| **Domain JPA Entities** | 9 mapped JPA entities with Lombok, audit timestamps, and multi-tenant workspace isolation. | ✅ Completed |
-| **Business Invariants Engine** | Order balance invariant $\text{balanceDue} = \max(0, \text{totalAmount} - \text{amountPaid})$; Customer duplicate phone/handle match & tag unionization; manual payment recording. | ✅ Completed |
-| **Spring Security & Stateless JWT** | `JwtAuthenticationFilter`, `JwtTokenProvider`, BCrypt password hashing, and CORS configured for Next.js frontend. | ✅ Completed |
-| **REST API Controller Endpoints** | `/auth/signup`, `/auth/login`, `/enquiries`, `/customers`, `/customers/merge`, `/orders`, `/orders/{id}/payments`, `/products`, `/follow-ups`, `/trash`, `/trash/restore`. | ✅ Completed |
-| **Global Error Handling** | `GlobalExceptionHandler` with standardized JSON `ApiResponse<T>` envelopes. | ✅ Completed |
-
----
-
-## 6. Frontend Route Status (Live Audit: 16/16 Passed)
-
-| Route | Screen / Purpose | Status | UI/UX Fidelity & Verified Behavior |
-| :--- | :--- | :---: | :--- |
-| `/` | Public Marketing Landing Page | ✅ Verified (200 OK) | Storeflow marketing layout: sticky nav, tactile linen noise background, ambient Burgundy & Sage breathing aura orbs, GSAP 3D floating commerce tokens with interactive mouse parallax, 4-step workflow, and FAQ. |
-| `/login` | Authentication Screen | ✅ Verified (200 OK) | 50/50 equal-width split. Left framed image (`AurenLogin1.png`) uncropped with top Auren logo and bottom tagline 100% visible. Right panel has Google-only social sign-in (Apple removed per directive), microinteractions, and dark sage CTA. |
-| `/signup` | Seller Account Registration | ✅ Verified (200 OK) | Balanced 50/50 split matching `/login`, business category picker, and direct route to `/onboarding`. |
-| `/register` | Route Alias | ✅ Verified (200 OK) | Mirrors `/signup`. |
-| `/forgot-password` | Password Recovery Flow | ✅ Verified (200 OK) | Email submission form with simulated reset instruction banner. |
-| `/verify-email` | Email Verification State | ✅ Verified (200 OK) | Verification reminder with resend countdown timer. |
-| `/onboarding` | 3-Step Business Setup Wizard | ✅ Verified (200 OK) | Step 1 (Identity), Step 2 (Regional Settings - INR/Asia:Kolkata), Step 3 (Launch Workspace). |
-| `/dashboard` | Main Operational Workspace | ✅ Verified (200 OK) | Storeflow KPI cards with hover tilt, recent inquiries feed, urgent follow-up alert banner with Burgundy styling, fully wired to `WorkspaceContext`. |
-| `/enquiries` | Inquiries Directory & Capture | ✅ Verified (200 OK) | Inquiries table, channel filters, status pills, HTML5 drag-and-drop screenshot upload with client preview, simulated Gemini multimodal extraction, editable draft review, floating bulk action bar, and "Convert to Order" flow. |
-| `/customers` | Customer Management | ✅ Verified (200 OK) | Customer cards, contact metadata, spend tracking, order history drawer, duplicate contact warning banner, and side-by-side interactive comparison & merge modal with phone consolidation. |
-| `/orders` | Order Pipeline & Payments | ✅ Verified (200 OK) | Order lifecycle stages, itemized breakdowns, manual "Record Payment" drawer (Cash/UPI/Bank Transfer balance calculator), printable receipt modal, and empty state. |
-| `/products` | Internal Product Catalogue | ✅ Verified (200 OK) | Product card grid, variant tags, stock quantities, low-stock threshold warning pills, empty state, and "Add Product" drawer. |
-| `/follow-ups` | Follow-up Task Queue | ✅ Verified (200 OK) | Date-grouped tasks (Due Today, Upcoming, Completed) with reactive checkbox state syncing, +2-day snooze action, dynamic badge decrementing, and empty state. |
-| `/quick-replies` | Reusable Message Templates | ✅ Verified (200 OK) | Categorized templates (Greeting, Pricing, Payment, Delivery) with functional 1-click clipboard copy. |
-| `/notifications`| In-App Notification Center | ✅ Verified (200 OK) | Operational alert cards (due follow-ups in Burgundy, low stock, new inquiries) with filter toggles. |
-| `/settings` | Business Settings & Preferences | ✅ Verified (200 OK) | Business profile, regional preferences (INR / Asia/Kolkata), AI quota progress bar, complete CSV export, and 30-Day Trash Retention section with restore/purge (SRS FR-DATA-002 / SEC-004). |
+The entire backend and integration surface is completed according to the SRS. We are now ready to execute:
+1. Unit testing suite.
+2. Integration testing suite.
+3. Postman end-to-end API testing across all 12 modules.
