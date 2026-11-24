@@ -146,3 +146,36 @@ $$\text{paymentStatus} = \begin{cases}
 - **Postman API Test Collection (`AUREN_Backend_API.postman_collection.json`):**
   - **22 Endpoints Verified** across 12 feature folders with automated token chaining and status assertions.
 
+---
+
+## 5. Frontend Production Hygiene & PWA Configuration
+
+### A. Next.js 14.2.35 Upgrade
+- Upgraded the Next.js runtime from `14.2.15` to `14.2.35` (the latest stable LTS patch for Next.js 14), eliminating development version-staleness alerts.
+- Configured `--legacy-peer-deps` resolution for compatible Vitest and React 18 dependencies.
+
+### B. Viewport & Metadata Modernization
+- Decoupled `viewport` metadata from `export const metadata: Metadata` in `frontend/src/app/layout.tsx`.
+- Implemented `export const viewport: Viewport = { themeColor: "#4E5841", width: "device-width", initialScale: 1 }` in accordance with Next.js 14 specifications, eliminating console warnings across all 19 prerendered routes.
+
+### C. PWA Manifest & Assets
+- Generated high-resolution branded PNG icons (`auren-icon-192.png` and `auren-icon-512.png`) inside `frontend/public/images/` conforming to maskable web app standards.
+- Fully wired `manifest.json` and service worker (`sw.js`) for progressive web app installation.
+
+---
+
+## 6. Next Session Quick-Start Reference
+
+```bash
+# Frontend (Next.js 14.2.35):
+cd frontend
+npm run dev      # http://localhost:3000
+npm test         # Run 26 Vitest tests
+
+# Backend (Spring Boot 3.3.5 / Java 21 LTS / JDK 24 Host):
+cd backend
+mvn clean test   # Run 32 Unit and MockMvc integration tests
+mvn spring-boot:run # Runs on http://localhost:8080/api/v1
+```
+
+

@@ -2,7 +2,7 @@
 
 **Repository:** `https://github.com/rasikakudale90/Auren.git`  
 **Current Milestone:** All SRS Specifications & Endpoints Completed — **100% COMPLETED**  
-**Last Updated:** November 23, 2026  
+**Last Updated:** November 24, 2026  
 **Primary References:** `docs/AUREN_PRD.md`, `docs/AUREN_SRS.md`, `docs/AUREN_DESIGN_TOKENS_v1.1.md`, `docs/AUREN_Frontend.md`, `technical-depth.md`
 
 ---
@@ -65,5 +65,21 @@ All tests across backend, frontend, and API specifications have passed with zero
 2. **Frontend Vitest Suite (`npm test`):**
    - **26 / 26 tests passing** (7 test suites).
    - WorkspaceContext state depth, login validation, screenshot upload dropzone, order calculations, trash retention UI.
+   - Upgraded to Next.js 14.2.35 with clean zero-warning builds.
 3. **Postman API Test Suite (`AUREN_Backend_API.postman_collection.json`):**
    - **22 / 22 API endpoints validated** across 12 feature folders with automated token propagation and assertion scripts.
+
+---
+
+## 4. Next Session Continuity & Quick Start Guide
+
+### Local Development Ports:
+- **Frontend App:** `http://localhost:3000` (run: `cd frontend; npm run dev`)
+- **Backend API:** `http://localhost:8080/api/v1` (run: `cd backend; mvn spring-boot:run`)
+- **Health Check:** `http://localhost:8080/api/v1/health`
+
+### Key Invariant & Architecture Anchors:
+1. **JDK 24 Native Compatibility:** Pure Java POJOs (Lombok removed across all 69 backend files and 11 JPA entities).
+2. **Frontend Build Hygiene:** Next.js 14.2.35, standalone viewport export, valid PWA 192x192 and 512x512 icons in `public/images/`.
+3. **Multi-Tenant Isolation:** Enforced via `workspace_id` foreign keys and `@AuthenticationPrincipal AurenUserPrincipal`.
+4. **Git Branch:** `main` (all commits cleanly pushed to `https://github.com/rasikakudale90/Auren.git`).
